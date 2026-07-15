@@ -6,14 +6,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /*
  * Main Class
  * Starts the Spring Boot Application
+ * DBInitializer runs automatically via CommandLineRunner
  */
 
 @SpringBootApplication
 public class NgoDonationApplication {
 
     public static void main(String[] args) {
-
-        com.ngo.util.DBInitializer.initialize();
 
         SpringApplication.run(NgoDonationApplication.class, args);
 

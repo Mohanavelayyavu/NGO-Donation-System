@@ -1,273 +1,115 @@
 package com.ngo.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-
 import com.ngo.model.User;
 import com.ngo.util.DBUtil;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
+/*
+ * UserDAO - All database operations for User
+ */
 public class UserDAO {
 
-    // Register User
     public boolean registerUser(User user) {
-
-        boolean status = false;
-        String sql = "INSERT INTO users(name,email,password,role) VALUES(?,?,?,?)";
-        System.out.println("[CRUD - INSERT] Table: users | SQL: " + sql + " | Params: name='" + user.getName() + "', email='" + user.getEmail() + "', role='" + user.getRole() + "'");
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
+        String sql = "INSERT INTO users (name, email, password, role, created_date) VALUES (?,?,?,?,?)";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, user.getName());
             ps.setString(2, user.getEmail());
             ps.setString(3, user.getPassword());
             ps.setString(4, user.getRole());
-
-            int rows = ps.executeUpdate();
-
-            if (rows > 0) {
-                status = true;
-            }
-
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return status;
+            ps.setObject(5, user.getCreatedDate());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
     }
 
-    // Login
     public User loginUser(String email, String password, String role) {
-
-        User user = null;
         String sql = "SELECT * FROM users WHERE email=? AND password=? AND role=?";
-        System.out.println("[CRUD - SELECT] Table: users | SQL: " + sql + " | Params: email='" + email + "', role='" + role + "'");
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ps.setString(1, email);
-            ps.setString(2, password);
-            ps.setString(3, role);
-
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, email); ps.setString(2, password); ps.setString(3, role);
             ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-
-                user = new User();
-
-                user.setId(rs.getInt("id"));
-                user.setName(rs.getString("name"));
-                user.setEmail(rs.getString("email"));
-                user.setPassword(rs.getString("password"));
-                user.setRole(rs.getString("role"));
-
-            }
-
-            rs.close();
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return user;
-
+            if (rs.next()) return mapUser(rs);
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
     }
 
-    // Get All Users
-    public ArrayList<User> getAllUsers() {
-
-        ArrayList<User> list = new ArrayList<>();
-        String sql = "SELECT * FROM users";
-        System.out.println("[CRUD - SELECT] Table: users | SQL: " + sql);
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
+    public List<User> getAllUsers() {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT * FROM users ORDER BY id";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                User user = new User();
-
-                user.setId(rs.getInt("id"));
-                user.setName(rs.getString("name"));
-                user.setEmail(rs.getString("email"));
-                user.setPassword(rs.getString("password"));
-                user.setRole(rs.getString("role"));
-
-                list.add(user);
-
-            }
-
-            rs.close();
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+            while (rs.next()) list.add(mapUser(rs));
+        } catch (Exception e) { e.printStackTrace(); }
         return list;
-
     }
 
-    // Get User By Id
     public User getUserById(int id) {
-
-        User user = null;
         String sql = "SELECT * FROM users WHERE id=?";
-        System.out.println("[CRUD - SELECT] Table: users | SQL: " + sql + " | Params: id=" + id);
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
-
             ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-
-                user = new User();
-
-                user.setId(rs.getInt("id"));
-                user.setName(rs.getString("name"));
-                user.setEmail(rs.getString("email"));
-                user.setPassword(rs.getString("password"));
-                user.setRole(rs.getString("role"));
-
-            }
-
-            rs.close();
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return user;
-
+            if (rs.next()) return mapUser(rs);
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
     }
 
-    // Update User
+    public List<User> getUsersByRole(String role) {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE role=? ORDER BY id";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, role);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) list.add(mapUser(rs));
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
+
     public boolean updateUser(User user) {
-
-        boolean status = false;
-        String sql = "UPDATE users SET name=?,email=?,password=?,role=? WHERE id=?";
-        System.out.println("[CRUD - UPDATE] Table: users | SQL: " + sql + " | Params: id=" + user.getId() + ", name='" + user.getName() + "', email='" + user.getEmail() + "', role='" + user.getRole() + "'");
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ps.setString(1, user.getName());
-            ps.setString(2, user.getEmail());
-            ps.setString(3, user.getPassword());
-            ps.setString(4, user.getRole());
+        String sql = "UPDATE users SET name=?, email=?, password=?, role=? WHERE id=?";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, user.getName()); ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword()); ps.setString(4, user.getRole());
             ps.setInt(5, user.getId());
-
-            int rows = ps.executeUpdate();
-
-            if (rows > 0) {
-                status = true;
-            }
-
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return status;
-
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
     }
 
-    // Delete User
     public boolean deleteUser(int id) {
-
-        boolean status = false;
         String sql = "DELETE FROM users WHERE id=?";
-        System.out.println("[CRUD - DELETE] Table: users | SQL: " + sql + " | Params: id=" + id);
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
-
-            int rows = ps.executeUpdate();
-
-            if (rows > 0) {
-                status = true;
-            }
-
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return status;
-
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
     }
 
-    // Check Email Exists
-    public boolean emailExists(String email) {
-
-        boolean status = false;
-        String sql = "SELECT * FROM users WHERE email=?";
-        System.out.println("[CRUD - SELECT] Table: users | SQL: " + sql + " | Params: email='" + email + "'");
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ps.setString(1, email);
-
+    public int getTotalCount() {
+        String sql = "SELECT COUNT(*) FROM users";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                status = true;
-            }
-
-            rs.close();
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return status;
-
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
     }
 
+    public int getCountByRole(String role) {
+        String sql = "SELECT COUNT(*) FROM users WHERE role=?";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, role);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
+    }
+
+    private User mapUser(ResultSet rs) throws SQLException {
+        User u = new User();
+        u.setId(rs.getInt("id"));
+        u.setName(rs.getString("name"));
+        u.setEmail(rs.getString("email"));
+        u.setPassword(rs.getString("password"));
+        u.setRole(rs.getString("role"));
+        Date d = rs.getDate("created_date");
+        if (d != null) u.setCreatedDate(d.toLocalDate());
+        return u;
+    }
 }

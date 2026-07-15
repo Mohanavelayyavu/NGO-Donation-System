@@ -1,232 +1,103 @@
 package com.ngo.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import com.ngo.model.Beneficiary;
+import com.ngo.util.DBUtil;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ngo.model.Beneficiary;
-import com.ngo.util.DBUtil;
-
 /*
- * Beneficiary DAO Class
- * Handles all database operations
+ * BeneficiaryDAO - All database operations for Beneficiary
  */
-
 public class BeneficiaryDAO {
 
-    // Add Beneficiary Application
-    public boolean addApplication(Beneficiary beneficiary) {
-
-        boolean status = false;
-        String sql = "INSERT INTO beneficiaries(user_id,purpose,description,required_amount,status) VALUES(?,?,?,?,?)";
-        System.out.println("[CRUD - INSERT] Table: beneficiaries | SQL: " + sql + " | Params: user_id=" + beneficiary.getUserId() + ", purpose='" + beneficiary.getPurpose() + "', required_amount=" + beneficiary.getRequiredAmount());
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ps.setInt(1, beneficiary.getUserId());
-            ps.setString(2, beneficiary.getPurpose());
-            ps.setString(3, beneficiary.getDescription());
-            ps.setDouble(4, beneficiary.getRequiredAmount());
-            ps.setString(5, beneficiary.getStatus());
-
-            int rows = ps.executeUpdate();
-
-            if (rows > 0) {
-                status = true;
-            }
-
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return status;
+    public boolean create(Beneficiary b) {
+        String sql = "INSERT INTO beneficiaries (user_id,ngo_id,verification_status,contact_details,address,family_details,income_info) VALUES (?,?,?,?,?,?,?)";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, b.getUserId()); ps.setInt(2, b.getNgoId());
+            ps.setString(3, b.getVerificationStatus() != null ? b.getVerificationStatus() : "PENDING");
+            ps.setString(4, b.getContactDetails()); ps.setString(5, b.getAddress());
+            ps.setString(6, b.getFamilyDetails()); ps.setString(7, b.getIncomeInfo());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
     }
 
-    // Get All Applications
-    public List<Beneficiary> getAllApplications() {
-
+    public List<Beneficiary> getPending() {
         List<Beneficiary> list = new ArrayList<>();
-        String sql = "SELECT * FROM beneficiaries";
-        System.out.println("[CRUD - SELECT] Table: beneficiaries | SQL: " + sql);
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
+        String sql = "SELECT * FROM beneficiaries WHERE verification_status='PENDING'";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                Beneficiary beneficiary = new Beneficiary();
-
-                beneficiary.setId(rs.getInt("id"));
-                beneficiary.setUserId(rs.getInt("user_id"));
-                beneficiary.setPurpose(rs.getString("purpose"));
-                beneficiary.setDescription(rs.getString("description"));
-                beneficiary.setRequiredAmount(rs.getDouble("required_amount"));
-                beneficiary.setCollectedAmount(rs.getDouble("collected_amount"));
-                beneficiary.setStatus(rs.getString("status"));
-
-                list.add(beneficiary);
-            }
-
-            rs.close();
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+            while (rs.next()) list.add(mapBen(rs));
+        } catch (Exception e) { e.printStackTrace(); }
         return list;
     }
 
-    // Get Application By ID
-    public Beneficiary getApplicationById(int id) {
+    public List<Beneficiary> getAll() {
+        List<Beneficiary> list = new ArrayList<>();
+        String sql = "SELECT * FROM beneficiaries ORDER BY id";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) list.add(mapBen(rs));
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
 
-        Beneficiary beneficiary = null;
-        String sql = "SELECT * FROM beneficiaries WHERE id=?";
-        System.out.println("[CRUD - SELECT] Table: beneficiaries | SQL: " + sql + " | Params: id=" + id);
+    public List<Beneficiary> getByNgo(int ngoId) {
+        List<Beneficiary> list = new ArrayList<>();
+        String sql = "SELECT * FROM beneficiaries WHERE ngo_id=? ORDER BY id";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, ngoId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) list.add(mapBen(rs));
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
 
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
+    public boolean verify(int id) {
+        String sql = "UPDATE beneficiaries SET verification_status='VERIFIED' WHERE id=?";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
+    }
 
+    public boolean reject(int id) {
+        String sql = "UPDATE beneficiaries SET verification_status='REJECTED' WHERE id=?";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
+    }
+
+    public Beneficiary getById(int id) {
+        String sql = "SELECT * FROM beneficiaries WHERE id=?";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-
-                beneficiary = new Beneficiary();
-
-                beneficiary.setId(rs.getInt("id"));
-                beneficiary.setUserId(rs.getInt("user_id"));
-                beneficiary.setPurpose(rs.getString("purpose"));
-                beneficiary.setDescription(rs.getString("description"));
-                beneficiary.setRequiredAmount(rs.getDouble("required_amount"));
-                beneficiary.setCollectedAmount(rs.getDouble("collected_amount"));
-                beneficiary.setStatus(rs.getString("status"));
-            }
-
-            rs.close();
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return beneficiary;
+            if (rs.next()) return mapBen(rs);
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
     }
 
-    // Update Status
-    public boolean updateStatus(int id, String status) {
-
-        boolean updated = false;
-        String sql = "UPDATE beneficiaries SET status=? WHERE id=?";
-        System.out.println("[CRUD - UPDATE] Table: beneficiaries | SQL: " + sql + " | Params: id=" + id + ", status='" + status + "'");
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            String sqlUpdate = "UPDATE beneficiaries SET status=? WHERE id=?";
-
-            PreparedStatement ps = con.prepareStatement(sqlUpdate);
-
-            ps.setString(1, status);
-            ps.setInt(2, id);
-
-            int rows = ps.executeUpdate();
-
-            if (rows > 0) {
-                updated = true;
-            }
-
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return updated;
+    public int getCount() {
+        String sql = "SELECT COUNT(*) FROM beneficiaries";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
     }
 
-    // Donate to Beneficiary
-    public boolean donateToBeneficiary(int beneficiaryId, int donorId, double amount) {
-        boolean success = false;
-        try (Connection con = DBUtil.getConnection()) {
-            con.setAutoCommit(false);
-            try {
-                // 1. Insert into beneficiary_donations
-                String insertDonation = "INSERT INTO beneficiary_donations(donor_id, beneficiary_id, amount, donation_date) VALUES(?, ?, ?, CURDATE())";
-                try (PreparedStatement ps1 = con.prepareStatement(insertDonation)) {
-                    ps1.setInt(1, donorId);
-                    ps1.setInt(2, beneficiaryId);
-                    ps1.setDouble(3, amount);
-                    ps1.executeUpdate();
-                }
-                
-                // 2. Update collected_amount in beneficiaries
-                String updateBeneficiary = "UPDATE beneficiaries SET collected_amount = collected_amount + ? WHERE id = ?";
-                try (PreparedStatement ps2 = con.prepareStatement(updateBeneficiary)) {
-                    ps2.setDouble(1, amount);
-                    ps2.setInt(2, beneficiaryId);
-                    ps2.executeUpdate();
-                }
-                
-                con.commit();
-                success = true;
-            } catch (Exception e) {
-                con.rollback();
-                e.printStackTrace();
-            } finally {
-                con.setAutoCommit(true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return success;
-    }
-
-    // Get donations by donor
-    public List<com.ngo.model.BeneficiaryDonation> getDonationsByDonor(int donorId) {
-        List<com.ngo.model.BeneficiaryDonation> list = new ArrayList<>();
-        String sql = "SELECT bd.*, b.purpose FROM beneficiary_donations bd " +
-                     "JOIN beneficiaries b ON bd.beneficiary_id = b.id WHERE bd.donor_id = ? ORDER BY bd.donation_date DESC";
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, donorId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    com.ngo.model.BeneficiaryDonation bd = new com.ngo.model.BeneficiaryDonation();
-                    bd.setId(rs.getInt("id"));
-                    bd.setDonorId(rs.getInt("donor_id"));
-                    bd.setBeneficiaryId(rs.getInt("beneficiary_id"));
-                    bd.setPurpose(rs.getString("purpose"));
-                    bd.setAmount(rs.getDouble("amount"));
-                    bd.setDonationDate(rs.getDate("donation_date"));
-                    list.add(bd);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
+    private Beneficiary mapBen(ResultSet rs) throws SQLException {
+        Beneficiary b = new Beneficiary();
+        b.setId(rs.getInt("id"));
+        b.setUserId(rs.getInt("user_id"));
+        b.setNgoId(rs.getInt("ngo_id"));
+        b.setVerificationStatus(rs.getString("verification_status"));
+        b.setContactDetails(rs.getString("contact_details"));
+        b.setAddress(rs.getString("address"));
+        b.setFamilyDetails(rs.getString("family_details"));
+        b.setIncomeInfo(rs.getString("income_info"));
+        return b;
     }
 }

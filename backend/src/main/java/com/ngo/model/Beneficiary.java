@@ -1,91 +1,31 @@
 package com.ngo.model;
 
-/*
- * Beneficiary Model Class
- * Represents a beneficiary application
- */
-
 public class Beneficiary {
-
     private int id;
     private int userId;
-    private String purpose;
-    private String description;
-    private double requiredAmount;
-    private double collectedAmount;
-    private String status;
+    private int ngoId;
+    private String verificationStatus;
+    private String contactDetails;
+    private String address;
+    private String familyDetails;
+    private String incomeInfo;
 
-    // Default Constructor
-    public Beneficiary() {
-    }
+    public Beneficiary() {}
 
-    // Parameterized Constructor
-    public Beneficiary(int id, int userId, String purpose, String description,
-                       double requiredAmount, double collectedAmount, String status) {
-        this.id = id;
-        this.userId = userId;
-        this.purpose = purpose;
-        this.description = description;
-        this.requiredAmount = requiredAmount;
-        this.collectedAmount = collectedAmount;
-        this.status = status;
-    }
-
-    // Getters and Setters
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public String getPurpose() {
-        return purpose;
-    }
-
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public double getRequiredAmount() {
-        return requiredAmount;
-    }
-
-    public void setRequiredAmount(double requiredAmount) {
-        this.requiredAmount = requiredAmount;
-    }
-
-    public double getCollectedAmount() {
-        return collectedAmount;
-    }
-
-    public void setCollectedAmount(double collectedAmount) {
-        this.collectedAmount = collectedAmount;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public int getUserId() { return userId; }
+    public void setUserId(int userId) { this.userId = userId; }
+    public int getNgoId() { return ngoId; }
+    public void setNgoId(int ngoId) { this.ngoId = ngoId; }
+    public String getVerificationStatus() { return verificationStatus; }
+    public void setVerificationStatus(String verificationStatus) { this.verificationStatus = verificationStatus; }
+    public String getContactDetails() { return contactDetails; }
+    public void setContactDetails(String contactDetails) { this.contactDetails = contactDetails; }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+    public String getFamilyDetails() { return familyDetails; }
+    public void setFamilyDetails(String familyDetails) { this.familyDetails = familyDetails; }
+    public String getIncomeInfo() { return incomeInfo; }
+    public void setIncomeInfo(String incomeInfo) { this.incomeInfo = incomeInfo; }
 }

@@ -1,72 +1,49 @@
 package com.ngo.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.ngo.model.Beneficiary;
 import com.ngo.service.BeneficiaryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/beneficiaries")
 @CrossOrigin(origins = "*")
 public class BeneficiaryController {
 
     @Autowired
-    private BeneficiaryService beneficiaryService;
+    private BeneficiaryService service;
 
-    // Apply for Help
-    @PostMapping
-    public boolean addApplication(@RequestBody Beneficiary beneficiary) {
-
-        return beneficiaryService.addApplication(beneficiary);
-
+    @PostMapping("/beneficiaries")
+    public ResponseEntity<?> create(@RequestBody Beneficiary b) {
+        boolean ok = service.create(b);
+        if (ok) return ResponseEntity.ok(Map.of("message","Beneficiary registered"));
+        return ResponseEntity.status(500).body(Map.of("message","Registration failed"));
     }
 
-    // Get All Applications
-    @GetMapping
-    public List<Beneficiary> getAllApplications() {
+    @GetMapping("/beneficiaries")
+    public ResponseEntity<?> getAll() { return ResponseEntity.ok(service.getAll()); }
 
-        return beneficiaryService.getAllApplications();
+    @GetMapping("/beneficiaries/pending")
+    public ResponseEntity<?> getPending() { return ResponseEntity.ok(service.getPending()); }
 
+    @GetMapping("/beneficiaries/ngo/{ngoId}")
+    public ResponseEntity<?> getByNgo(@PathVariable int ngoId) { return ResponseEntity.ok(service.getByNgo(ngoId)); }
+
+    @PutMapping("/beneficiaries/{id}/verify")
+    public ResponseEntity<?> verify(@PathVariable int id) {
+        boolean ok = service.verify(id);
+        if (ok) return ResponseEntity.ok(Map.of("message","Beneficiary verified"));
+        return ResponseEntity.status(500).body(Map.of("message","Verification failed"));
     }
 
-    // Get Application By ID
-    @GetMapping("/{id}")
-    public Beneficiary getApplicationById(@PathVariable int id) {
-
-        return beneficiaryService.getApplicationById(id);
-
+    @PutMapping("/beneficiaries/{id}/reject")
+    public ResponseEntity<?> reject(@PathVariable int id) {
+        boolean ok = service.reject(id);
+        if (ok) return ResponseEntity.ok(Map.of("message","Beneficiary rejected"));
+        return ResponseEntity.status(500).body(Map.of("message","Rejection failed"));
     }
 
-    // Update Status (Approve / Reject)
-    @PutMapping("/{id}/{status}")
-    public boolean updateStatus(@PathVariable int id,
-                                @PathVariable String status) {
-        return beneficiaryService.updateStatus(id, status);
-    }
-
-    // Donate to Beneficiary
-    @PostMapping("/{id}/donate/{donorId}/{amount}")
-    public String donateToBeneficiary(@PathVariable int id, 
-                                      @PathVariable int donorId, 
-                                      @PathVariable double amount) {
-        boolean ok = beneficiaryService.donateToBeneficiary(id, donorId, amount);
-        return ok ? "Donation successful! Thank you for helping." : "Donation failed. Please try again.";
-    }
-
-    // Get donations by donor
-    @GetMapping("/donations/donor/{donorId}")
-    public List<com.ngo.model.BeneficiaryDonation> getDonationsByDonor(@PathVariable int donorId) {
-        return beneficiaryService.getDonationsByDonor(donorId);
-    }
+    @GetMapping("/beneficiaries/count")
+    public ResponseEntity<?> getCount() { return ResponseEntity.ok(Map.of("count", service.getCount())); }
 }

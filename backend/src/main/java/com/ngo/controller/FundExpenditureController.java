@@ -1,16 +1,12 @@
 package com.ngo.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.ngo.model.FundExpenditure;
 import com.ngo.service.FundExpenditureService;
-
-/*
- * Fund Expenditure Controller
- */
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -19,52 +15,37 @@ public class FundExpenditureController {
     @Autowired
     private FundExpenditureService service;
 
-    // Create expenditure
-    @PostMapping("/expenditures")
-    public String create(@RequestBody FundExpenditure exp) {
-        int id = service.create(exp);
-        if (id > 0) {
-            return "Expenditure recorded with ID: " + id;
-        }
-        return "Failed to record expenditure";
+    @PostMapping("/fund-expenditures")
+    public ResponseEntity<?> create(@RequestBody FundExpenditure fe) {
+        if (fe.getSpentDate() == null) fe.setSpentDate(LocalDate.now());
+        boolean ok = service.create(fe);
+        if (ok) return ResponseEntity.ok(Map.of("message","Expenditure recorded"));
+        return ResponseEntity.status(500).body(Map.of("message","Create failed"));
     }
 
-    // Get all expenditures
-    @GetMapping("/expenditures")
-    public List<FundExpenditure> getAll() {
-        return service.getAll();
+    @GetMapping("/fund-expenditures")
+    public ResponseEntity<?> getAll() { return ResponseEntity.ok(service.getAll()); }
+
+    @GetMapping("/fund-expenditures/ngo/{ngoId}")
+    public ResponseEntity<?> getByNgo(@PathVariable int ngoId) { return ResponseEntity.ok(service.getByNgo(ngoId)); }
+
+    @GetMapping("/fund-expenditures/pending")
+    public ResponseEntity<?> getPending() { return ResponseEntity.ok(service.getPending()); }
+
+    @PutMapping("/fund-expenditures/{id}/approve")
+    public ResponseEntity<?> approve(@PathVariable int id) {
+        boolean ok = service.approve(id);
+        if (ok) return ResponseEntity.ok(Map.of("message","Expenditure approved"));
+        return ResponseEntity.status(500).body(Map.of("message","Approval failed"));
     }
 
-    // Get by ID
-    @GetMapping("/expenditures/{id}")
-    public FundExpenditure getById(@PathVariable int id) {
-        return service.getById(id);
+    @PutMapping("/fund-expenditures/{id}/reject")
+    public ResponseEntity<?> reject(@PathVariable int id) {
+        boolean ok = service.reject(id);
+        if (ok) return ResponseEntity.ok(Map.of("message","Expenditure rejected"));
+        return ResponseEntity.status(500).body(Map.of("message","Rejection failed"));
     }
 
-    // Get by NGO
-    @GetMapping("/expenditures/ngo/{ngoId}")
-    public List<FundExpenditure> getByNgo(@PathVariable int ngoId) {
-        return service.getByNgo(ngoId);
-    }
-
-    // Update expenditure
-    @PutMapping("/expenditures/{id}")
-    public String update(@PathVariable int id, @RequestBody FundExpenditure exp) {
-        exp.setExpenditureId(id);
-        boolean status = service.update(exp);
-        if (status) {
-            return "Expenditure updated";
-        }
-        return "Update failed";
-    }
-
-    // Delete expenditure
-    @DeleteMapping("/expenditures/{id}")
-    public String delete(@PathVariable int id) {
-        boolean status = service.delete(id);
-        if (status) {
-            return "Expenditure deleted";
-        }
-        return "Delete failed";
-    }
+    @GetMapping("/fund-expenditures/count")
+    public ResponseEntity<?> getCount() { return ResponseEntity.ok(Map.of("count", service.getCount())); }
 }

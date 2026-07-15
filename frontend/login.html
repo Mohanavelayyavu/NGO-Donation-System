@@ -1,390 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Hope Foundation NGO</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-        }
-
-        /* ---- LEFT PANEL ---- */
-        .left-panel {
-            flex: 1;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 40px;
-            position: relative;
-        }
-
-        .left-panel .brand {
-            position: absolute;
-            top: 32px;
-            left: 40px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 18px;
-            font-weight: 700;
-            color: #1565C0;
-            text-decoration: none;
-        }
-
-        .left-panel .brand i {
-            font-size: 22px;
-            color: #1565C0;
-        }
-
-        .illustration {
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .illustration-img {
-            width: 100%;
-            border-radius: 24px;
-            object-fit: cover;
-            max-height: 360px;
-            box-shadow: 0 16px 48px rgba(21,101,192,0.18);
-            display: block;
-        }
-
-        .illustration-caption {
-            text-align: center;
-            margin-top: 24px;
-        }
-
-        .illustration-caption h3 {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1565C0;
-            margin-bottom: 6px;
-        }
-
-        .illustration-caption p {
-            font-size: 14px;
-            color: #5c7a9f;
-            line-height: 1.6;
-            margin-bottom: 18px;
-        }
-
-        .stats-row {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-        }
-
-        .stat-pill {
-            background: #e3f2fd;
-            border-radius: 50px;
-            padding: 8px 18px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #1565C0;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 12px rgba(21,101,192,0.12);
-        }
-
-        .stat-pill i { font-size: 15px; }
-
-        /* ---- RIGHT PANEL ---- */
-        .right-panel {
-            width: 480px;
-            background: #1565C0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 48px 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Decorative circles */
-        .right-panel::before {
-            content: '';
-            position: absolute;
-            width: 320px;
-            height: 320px;
-            border: 2px solid rgba(255,255,255,0.12);
-            border-radius: 50%;
-            bottom: -120px;
-            right: -100px;
-        }
-
-        .right-panel::after {
-            content: '';
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            border: 2px solid rgba(255,255,255,0.08);
-            border-radius: 50%;
-            bottom: -60px;
-            right: -60px;
-        }
-
-        .form-card {
-            background: #fff;
-            border-radius: 20px;
-            padding: 40px 36px;
-            width: 100%;
-            max-width: 360px;
-            box-shadow: 0 24px 60px rgba(0,0,0,0.18);
-            position: relative;
-            z-index: 2;
-        }
-
-        .form-card h2 {
-            font-size: 26px;
-            font-weight: 800;
-            color: #0d1b2a;
-            margin-bottom: 4px;
-        }
-
-        .form-card .subtitle {
-            font-size: 14px;
-            color: #8a99b0;
-            margin-bottom: 28px;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 16px;
-        }
-
-        .input-group i {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #aab4c4;
-            font-size: 16px;
-        }
-
-        .input-group input,
-        .input-group select {
-            width: 100%;
-            padding: 13px 14px 13px 42px;
-            border: 1.5px solid #e8ecf4;
-            border-radius: 10px;
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            color: #0d1b2a;
-            background: #f9fafc;
-            outline: none;
-            transition: all 0.25s;
-            appearance: none;
-            -webkit-appearance: none;
-        }
-
-        .input-group input:focus,
-        .input-group select:focus {
-            border-color: #1565C0;
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(21,101,192,0.1);
-        }
-
-        .input-group input::placeholder { color: #b0bec5; }
-
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: #1565C0;
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 15px;
-            font-weight: 700;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            margin-top: 8px;
-            transition: all 0.25s;
-            letter-spacing: 0.3px;
-        }
-
-        .btn-login:hover {
-            background: #0d47a1;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(21,101,192,0.35);
-        }
-
-        .btn-login:active { transform: translateY(0); }
-
-        .form-footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 13px;
-            color: #8a99b0;
-        }
-
-        .form-footer a {
-            color: #1565C0;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .form-footer a:hover { text-decoration: underline; }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 18px 0;
-            color: #c8d0db;
-            font-size: 12px;
-        }
-
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e8ecf4;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            body { flex-direction: column; height: auto; min-height: 100vh; }
-            .left-panel { display: none; }
-            .right-panel { width: 100%; min-height: 100vh; padding: 40px 24px; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Hope NGO Donation System</title>
+  <meta name="description" content="Login to Hope NGO Donation Tracking System to manage donations, fund requests, and beneficiary support.">
+  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
-
+  <div class="login-layout">
     <!-- LEFT PANEL -->
-    <div class="left-panel">
-        <a href="index.html" class="brand">
-            <i class="bi bi-heart-pulse-fill"></i>
-            Hope Foundation
-        </a>
-
-        <div class="illustration">
-            <img src="login_illustration.jpg" alt="Community volunteers and donors" class="illustration-img">
-            <div class="illustration-caption">
-                <h3>Make a Difference Today</h3>
-                <p>Join thousands of donors and volunteers supporting communities across India.</p>
-                <div class="stats-row">
-                    <div class="stat-pill"><i class="bi bi-building"></i> <span id="statNGO">…</span> NGOs</div>
-                    <div class="stat-pill"><i class="bi bi-heart-fill"></i> <span id="statDonors">…</span> Donors</div>
-                </div>
-            </div>
+    <div class="login-left">
+      <!-- Placeholder illustration with gradient + icon -->
+      <div style="width:100%;max-width:440px;height:280px;background:rgba(255,255,255,0.08);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;border:1px solid rgba(255,255,255,0.15);position:relative;z-index:1">
+        <i class="bi bi-droplet-fill" style="font-size:4rem;color:#a5b4fc;filter:drop-shadow(0 0 20px rgba(165,180,252,0.6))"></i>
+        <div style="display:flex;gap:2rem">
+          <div style="text-align:center">
+            <div style="font-size:2rem;font-weight:800;color:#34d399">50+</div>
+            <div style="font-size:0.7rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px">NGOs</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:2rem;font-weight:800;color:#a5b4fc">1200+</div>
+            <div style="font-size:0.7rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px">Donors</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:2rem;font-weight:800;color:#fbbf24">5K+</div>
+            <div style="font-size:0.7rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px">Helped</div>
+          </div>
         </div>
+        <div style="position:absolute;top:-30px;left:-30px;width:80px;height:80px;border-radius:50%;background:rgba(16,185,129,0.15)"></div>
+        <div style="position:absolute;bottom:-20px;right:-20px;width:60px;height:60px;border-radius:50%;background:rgba(165,180,252,0.15)"></div>
+      </div>
+
+      <div class="login-left-content">
+        <h1>Empowering Communities<br>Through Giving</h1>
+        <p>A transparent, end-to-end donation management platform connecting NGOs, donors, and beneficiaries across India.</p>
+      </div>
+
+      <!-- Feature pills -->
+      <div style="display:flex;gap:0.75rem;margin-top:1.5rem;flex-wrap:wrap;justify-content:center;z-index:1;position:relative">
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:100px;padding:0.5rem 1rem;font-size:0.8rem;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:0.5rem"><i class="bi bi-shield-check" style="color:#34d399"></i> Transparent</div>
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:100px;padding:0.5rem 1rem;font-size:0.8rem;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:0.5rem"><i class="bi bi-graph-up" style="color:#a5b4fc"></i> Trackable</div>
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:100px;padding:0.5rem 1rem;font-size:0.8rem;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:0.5rem"><i class="bi bi-people-fill" style="color:#fbbf24"></i> Impactful</div>
+      </div>
     </div>
 
     <!-- RIGHT PANEL -->
-    <div class="right-panel">
-        <div class="form-card">
-            <h2>Hello!</h2>
-            <p class="subtitle">Sign in to your account to continue</p>
-
-            <div class="input-group">
-                <i class="bi bi-envelope-fill"></i>
-                <input type="email" id="email" placeholder="Email Address" autocomplete="email">
-            </div>
-
-            <div class="input-group">
-                <i class="bi bi-lock-fill"></i>
-                <input type="password" id="password" placeholder="Password" autocomplete="current-password">
-            </div>
-
-            <div class="input-group">
-                <i class="bi bi-person-badge-fill"></i>
-                <select id="role">
-                    <option value="">Select Role</option>
-                    <option value="ADMIN">Admin</option>
-                    <option value="NGO">NGO</option>
-                    <option value="DONOR">Donor</option>
-                    <option value="BENEFICIARY">Beneficiary</option>
-                </select>
-            </div>
-
-            <button class="btn-login" id="loginBtn" onclick="loginUser()">
-                Login
-            </button>
-
-            <div class="divider">or</div>
-
-            <div class="form-footer">
-                Don't have an account? <a href="register.html">Sign Up</a>
-            </div>
-
-            <div class="form-footer" style="margin-top: 8px;">
-                <a href="index.html">← Back to Home</a>
-            </div>
+    <div class="login-right">
+      <div class="login-form-container">
+        <div class="login-logo">
+          <i class="bi bi-droplet-fill"></i>
+          <div>
+            <div class="login-logo-text">Hope NGO</div>
+            <div class="login-logo-sub">Donation Tracking System</div>
+          </div>
         </div>
+
+        <h1 class="login-title">Welcome Back</h1>
+        <p class="login-subtitle">Sign in to access your dashboard</p>
+
+        <div class="error-msg" id="errorMsg">
+          <i class="bi bi-exclamation-circle-fill"></i>
+          <span id="errorText">Invalid credentials. Please try again.</span>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <div class="input-icon-wrap">
+              <i class="bi bi-envelope-fill"></i>
+              <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" required autocomplete="email">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-icon-wrap">
+              <i class="bi bi-lock-fill"></i>
+              <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="role">Login As</label>
+            <div class="input-icon-wrap">
+              <i class="bi bi-person-badge-fill"></i>
+              <select id="role" name="role" class="form-control" style="padding-left:2.75rem">
+                <option value="ADMIN">Admin</option>
+                <option value="NGO">NGO</option>
+                <option value="DONOR">Donor</option>
+                <option value="BENEFICIARY">Beneficiary</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-login" id="loginBtn">
+            <span id="loginBtnText">Sign In</span>
+            <i class="bi bi-arrow-right" id="loginBtnIcon"></i>
+          </button>
+        </form>
+
+        <div class="login-footer">
+          Don't have an account? <a href="register.html">Create one</a>
+        </div>
+
+        <!-- Demo Credentials -->
+        <div class="demo-credentials">
+          <h5><i class="bi bi-lightning-charge-fill"></i> Demo Credentials (Click to fill)</h5>
+          <div class="demo-grid">
+            <div class="demo-item" onclick="fillDemo('admin@donation.org','admin123','ADMIN')">
+              <div class="demo-role"><i class="bi bi-shield-fill"></i> Admin</div>
+              <div class="demo-creds">admin@donation.org / admin123</div>
+            </div>
+            <div class="demo-item" onclick="fillDemo('ngo1@gmail.com','123','NGO')">
+              <div class="demo-role"><i class="bi bi-building"></i> NGO</div>
+              <div class="demo-creds">ngo1@gmail.com / 123</div>
+            </div>
+            <div class="demo-item" onclick="fillDemo('donor1@gmail.com','123','DONOR')">
+              <div class="demo-role"><i class="bi bi-heart-fill"></i> Donor</div>
+              <div class="demo-creds">donor1@gmail.com / 123</div>
+            </div>
+            <div class="demo-item" onclick="fillDemo('ben1@gmail.com','123','BENEFICIARY')">
+              <div class="demo-role"><i class="bi bi-person-fill"></i> Beneficiary</div>
+              <div class="demo-creds">ben1@gmail.com / 123</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <script>
-    async function loginUser() {
-        let email    = document.getElementById("email").value.trim();
-        let password = document.getElementById("password").value.trim();
-        let role     = document.getElementById("role").value;
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Redirect if already logged in
+    if (AUTH.isLoggedIn()) window.location.href = 'dashboard.html';
 
-        if (!email || !password || !role) {
-            alert("Please fill all fields.");
-            return;
-        }
-
-        const btn = document.getElementById("loginBtn");
-        btn.disabled = true;
-        btn.textContent = "Logging in…";
-
-        try {
-            const response = await fetch("http://localhost:8081/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password, role })
-            });
-
-            if (!response.ok) throw new Error("Server Error");
-
-            const data = await response.json();
-
-            if (data && data.id) {
-                localStorage.setItem("user", JSON.stringify(data));
-                alert("Login Successful!");
-                window.location.href = "dashboard.html";
-            } else {
-                alert("Invalid Email, Password or Role.");
-            }
-        } catch (error) {
-            console.error(error);
-            alert("Unable to connect to the server.");
-        } finally {
-            btn.disabled = false;
-            btn.textContent = "Login";
-        }
+    function fillDemo(email, password, role) {
+      document.getElementById('email').value = email;
+      document.getElementById('password').value = password;
+      document.getElementById('role').value = role;
     }
 
-    // Load real stats from DB
-    async function loadStats() {
-        try {
-            const res   = await fetch("http://localhost:8081/users");
-            const users = await res.json();
-            const ngo    = users.filter(u => u.role === "NGO").length;
-            const donors = users.filter(u => u.role === "DONOR").length;
-            document.getElementById("statNGO").textContent    = ngo    || "0";
-            document.getElementById("statDonors").textContent = donors || "0";
-        } catch (e) {
-            document.getElementById("statNGO").textContent    = "—";
-            document.getElementById("statDonors").textContent = "—";
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const role = document.getElementById('role').value;
+      const btn = document.getElementById('loginBtn');
+      const btnText = document.getElementById('loginBtnText');
+      const errDiv = document.getElementById('errorMsg');
+      const errText = document.getElementById('errorText');
+
+      // Hide error
+      errDiv.classList.remove('show');
+      btn.disabled = true;
+      btnText.textContent = 'Signing in...';
+
+      try {
+        const user = await API.users.login(email, password, role);
+        if (user) {
+          AUTH.setUser(user);
+          btnText.textContent = 'Success!';
+          setTimeout(() => window.location.href = 'dashboard.html', 400);
+        } else {
+          throw new Error('Invalid credentials. Please check your email, password, and role.');
         }
+      } catch (err) {
+        errText.textContent = err.message || 'Login failed. Please try again.';
+        errDiv.classList.add('show');
+        btn.disabled = false;
+        btnText.textContent = 'Sign In';
+      }
     }
-
-    loadStats();
-    </script>
-
+  </script>
 </body>
 </html>

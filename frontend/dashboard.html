@@ -1,2023 +1,725 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Hope Foundation NGO</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f4f7ff;
-            color: #0d1b2a;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* ===== TOPBAR ===== */
-        .topbar {
-            background: #fff;
-            border-bottom: 1px solid #e8ecf4;
-            padding: 0 28px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(21,101,192,0.06);
-        }
-
-        .topbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 18px;
-            font-weight: 800;
-            color: #1565C0;
-        }
-
-        .topbar-brand i { font-size: 22px; }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .welcome-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #e3f2fd;
-            border-radius: 50px;
-            padding: 7px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #1565C0;
-        }
-
-        .welcome-badge i { font-size: 16px; }
-
-        .btn-logout {
-            padding: 8px 18px;
-            background: #fff;
-            border: 1.5px solid #e8ecf4;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #e74c3c;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.25s;
-        }
-
-        .btn-logout:hover {
-            background: #fff5f5;
-            border-color: #e74c3c;
-        }
-
-        /* ===== LAYOUT ===== */
-        .layout {
-            display: flex;
-            flex: 1;
-        }
-
-        /* ===== SIDEBAR ===== */
-        .sidebar {
-            width: 240px;
-            background: #1565C0;
-            min-height: calc(100vh - 64px);
-            padding: 24px 16px;
-            position: sticky;
-            top: 64px;
-            height: calc(100vh - 64px);
-            overflow-y: auto;
-            flex-shrink: 0;
-        }
-
-        .sidebar-section-label {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: rgba(255,255,255,0.5);
-            padding: 0 12px;
-            margin-bottom: 8px;
-            margin-top: 20px;
-        }
-
-        .sidebar-section-label:first-child { margin-top: 0; }
-
-        .sidebar-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            color: rgba(255,255,255,0.75);
-            font-size: 14px;
-            font-weight: 500;
-            text-decoration: none;
-            margin-bottom: 4px;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-        }
-
-        .sidebar-link i { font-size: 16px; }
-
-        .sidebar-link:hover,
-        .sidebar-link.active {
-            background: rgba(255,255,255,0.15);
-            color: #fff;
-        }
-
-        .sidebar-link.active {
-            background: rgba(255,255,255,0.2);
-            font-weight: 600;
-        }
-
-        /* ===== MAIN CONTENT ===== */
-        .main {
-            flex: 1;
-            padding: 32px 28px;
-            overflow-y: auto;
-        }
-
-        /* ===== PAGE HEADER ===== */
-        .page-header {
-            margin-bottom: 28px;
-        }
-
-        .page-header h2 {
-            font-size: 26px;
-            font-weight: 800;
-            color: #0d1b2a;
-            letter-spacing: -0.02em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .page-header h2 i { color: #1565C0; }
-
-        .page-header p {
-            font-size: 14px;
-            color: #8a99b0;
-            margin-top: 4px;
-        }
-
-        /* ===== STAT CARDS ===== */
-        .stat-cards {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 28px;
-        }
-
-        .stat-card {
-            background: #fff;
-            border-radius: 16px;
-            padding: 22px 20px;
-            border: 1px solid #e3eafe;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 28px rgba(21,101,192,0.1);
-        }
-
-        .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            flex-shrink: 0;
-        }
-
-        .stat-icon.blue  { background: #e3f2fd; color: #1565C0; }
-        .stat-icon.green { background: #e8f5e9; color: #2e7d32; }
-        .stat-icon.orange{ background: #fff3e0; color: #e65100; }
-        .stat-icon.purple{ background: #f3e5f5; color: #7b1fa2; }
-        .stat-icon.red   { background: #fce4ec; color: #c62828; }
-
-        .stat-info h3 {
-            font-size: 24px;
-            font-weight: 900;
-            color: #0d1b2a;
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-
-        .stat-info p {
-            font-size: 12px;
-            color: #8a99b0;
-            font-weight: 500;
-            margin: 0;
-        }
-
-        /* ===== CARDS ===== */
-        .card {
-            background: #fff;
-            border-radius: 16px;
-            border: 1px solid #e3eafe;
-            overflow: hidden;
-            margin-bottom: 24px;
-        }
-
-        .card-header {
-            padding: 18px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #e8ecf4;
-        }
-
-        .card-header h5 {
-            font-size: 15px;
-            font-weight: 700;
-            color: #0d1b2a;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin: 0;
-        }
-
-        .card-header h5 i { color: #1565C0; }
-
-        .card-body { padding: 24px; }
-
-        /* ===== FORM INPUTS ===== */
-        .form-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #5a6a7a;
-            margin-bottom: 6px;
-            display: block;
-        }
-
-        .form-control, .form-select, .form-textarea {
-            width: 100%;
-            padding: 11px 14px;
-            border: 1.5px solid #e8ecf4;
-            border-radius: 10px;
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            color: #0d1b2a;
-            background: #f9fafc;
-            outline: none;
-            margin-bottom: 16px;
-            transition: all 0.25s;
-            appearance: none;
-            -webkit-appearance: none;
-            resize: vertical;
-        }
-
-        .form-control:focus, .form-select:focus, .form-textarea:focus {
-            border-color: #1565C0;
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(21,101,192,0.1);
-        }
-
-        .form-control::placeholder,
-        .form-textarea::placeholder { color: #b0bec5; }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        /* ===== BUTTONS ===== */
-        .btn-primary {
-            padding: 11px 24px;
-            background: #1565C0;
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            transition: all 0.25s;
-        }
-
-        .btn-primary:hover {
-            background: #0d47a1;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 18px rgba(21,101,192,0.3);
-        }
-
-        .btn-success-sm {
-            padding: 5px 14px;
-            background: #e8f5e9;
-            border: none;
-            border-radius: 6px;
-            color: #2e7d32;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-success-sm:hover { background: #2e7d32; color: #fff; }
-
-        .btn-danger-sm {
-            padding: 5px 14px;
-            background: #fce4ec;
-            border: none;
-            border-radius: 6px;
-            color: #c62828;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-left: 6px;
-            transition: all 0.2s;
-        }
-
-        .btn-danger-sm:hover { background: #c62828; color: #fff; }
-
-        .btn-donate-sm {
-            padding: 5px 14px;
-            background: #e3f2fd;
-            border: none;
-            border-radius: 6px;
-            color: #1565C0;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-donate-sm:hover { background: #1565C0; color: #fff; }
-
-        /* ===== TABLES ===== */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .data-table th {
-            background: #f4f7ff;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: #8a99b0;
-            padding: 12px 16px;
-            text-align: left;
-            border-bottom: 1px solid #e8ecf4;
-        }
-
-        .data-table td {
-            padding: 14px 16px;
-            font-size: 13.5px;
-            color: #0d1b2a;
-            border-bottom: 1px solid #f0f4ff;
-            vertical-align: middle;
-        }
-
-        .data-table tr:last-child td { border-bottom: none; }
-
-        .data-table tr:hover td { background: #f9faff; }
-
-        /* ===== BADGES ===== */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-
-        .badge-success { background: #e8f5e9; color: #2e7d32; }
-        .badge-pending { background: #fff3e0; color: #e65100; }
-        .badge-info    { background: #e3f2fd; color: #1565C0; }
-        .badge-danger  { background: #fce4ec; color: #c62828; }
-
-        /* ===== SECTIONS ===== */
-        .dashboard-section { display: none; }
-        .dashboard-section.active { display: block; }
-
-        /* ===== EMPTY STATE ===== */
-        .empty-state {
-            text-align: center;
-            padding: 48px 24px;
-            color: #8a99b0;
-        }
-
-        .empty-state i { font-size: 48px; margin-bottom: 12px; display: block; }
-        .empty-state p { font-size: 14px; }
-
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .stat-cards { grid-template-columns: 1fr 1fr; }
-        }
-        /* ===== PROGRESS BAR ===== */
-        .progress-wrap { margin: 8px 0 16px; }
-        .progress-label { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #5a6a7a; margin-bottom: 5px; }
-        .progress-bar-bg { background: #e8ecf4; border-radius: 50px; height: 10px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, #1565C0, #42a5f5); transition: width 0.7s ease; }
-        .progress-bar-fill.green { background: linear-gradient(90deg, #2e7d32, #66bb6a); }
-        .progress-bar-fill.orange { background: linear-gradient(90deg, #e65100, #ffa726); }
-
-        /* ===== SUMMARY BANNER ===== */
-        .summary-banner {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
-            margin-bottom: 24px;
-        }
-        .summary-item {
-            background: #fff;
-            border: 1px solid #e3eafe;
-            border-radius: 14px;
-            padding: 18px 20px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        .summary-item:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(21,101,192,0.08); }
-        .summary-item .s-val { font-size: 26px; font-weight: 900; color: #0d1b2a; line-height: 1; margin-bottom: 4px; }
-        .summary-item .s-label { font-size: 12px; color: #8a99b0; font-weight: 500; }
-        .summary-item.blue .s-val  { color: #1565C0; }
-        .summary-item.green .s-val { color: #2e7d32; }
-        .summary-item.orange .s-val{ color: #e65100; }
-        .summary-item.red .s-val   { color: #c62828; }
-
-        /* ===== STATUS STEPS ===== */
-        .status-steps { display: flex; align-items: center; gap: 0; margin: 10px 0 4px; }
-        .step { display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .step-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #e8ecf4; background: #f4f7ff; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #b0bec5; transition: all 0.3s; }
-        .step-dot.done { background: #2e7d32; border-color: #2e7d32; color: #fff; }
-        .step-dot.active { background: #1565C0; border-color: #1565C0; color: #fff; }
-        .step-dot.rejected { background: #c62828; border-color: #c62828; color: #fff; }
-        .step-label { font-size: 10px; font-weight: 600; color: #8a99b0; margin-top: 4px; text-align: center; }
-        .step-line { flex: 1; height: 2px; background: #e8ecf4; margin-top: -14px; }
-        .step-line.done { background: #2e7d32; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Hope NGO Donation System</title>
+  <meta name="description" content="Manage NGO campaigns, donations, beneficiaries and fund utilization in one place.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
+  <div class="dashboard-layout">
 
-<!-- ===== TOPBAR ===== -->
-<div class="topbar">
-    <div class="topbar-brand">
-        <i class="bi bi-heart-pulse-fill"></i>
-        Hope Foundation NGO
-    </div>
-    <div class="topbar-right">
-        <div class="welcome-badge">
-            <i class="bi bi-person-circle"></i>
-            <span id="welcomeUser">Loading…</span>
+    <!-- =================== SIDEBAR =================== -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <i class="bi bi-droplet-fill logo-icon"></i>
+        <div class="sidebar-header-text">
+          <div class="logo-text">Hope NGO</div>
+          <div class="logo-sub">Donation System</div>
         </div>
-        <button class="btn-logout" onclick="logout()">
+      </div>
+      <nav id="sidebarNav">
+        <!-- Populated by JS based on role -->
+      </nav>
+      <div class="sidebar-footer">
+        &copy; 2026 Hope NGO System
+      </div>
+    </aside>
+
+    <!-- =================== MAIN CONTENT =================== -->
+    <main class="main-content">
+
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="topbar-left">
+          <h4 id="pageTitle">Dashboard</h4>
+          <div class="page-subtitle" id="pageSubtitle">Welcome back!</div>
+        </div>
+        <div class="user-info">
+          <div class="user-avatar" id="userAvatar">U</div>
+          <div>
+            <div class="user-name" id="userName">Loading...</div>
+            <div class="user-role-badge" id="userBadge">-</div>
+          </div>
+          <button class="logout-btn" onclick="AUTH.logout()">
             <i class="bi bi-box-arrow-right"></i> Logout
-        </button>
+          </button>
+        </div>
+      </div>
+
+      <!-- =================== ADMIN SECTION =================== -->
+      <section id="adminSection" class="dashboard-section">
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card stat-indigo">
+            <i class="bi bi-people-fill"></i>
+            <div class="stat-number" id="stat-totalUsers">-</div>
+            <div class="stat-label">Total Users</div>
+          </div>
+          <div class="stat-card stat-emerald">
+            <i class="bi bi-building"></i>
+            <div class="stat-number" id="stat-totalNgos">-</div>
+            <div class="stat-label">NGOs</div>
+          </div>
+          <div class="stat-card stat-blue">
+            <i class="bi bi-heart-fill"></i>
+            <div class="stat-number" id="stat-totalDonors">-</div>
+            <div class="stat-label">Donors</div>
+          </div>
+          <div class="stat-card stat-rose">
+            <i class="bi bi-person-fill"></i>
+            <div class="stat-number" id="stat-totalBeneficiaries">-</div>
+            <div class="stat-label">Beneficiaries</div>
+          </div>
+          <div class="stat-card stat-amber">
+            <i class="bi bi-currency-rupee"></i>
+            <div class="stat-number" id="stat-totalFunds">-</div>
+            <div class="stat-label">Total Funds Raised</div>
+          </div>
+          <div class="stat-card stat-cyan">
+            <i class="bi bi-folder-check"></i>
+            <div class="stat-number" id="stat-activeRequests">-</div>
+            <div class="stat-label">Active Requests</div>
+          </div>
+          <div class="stat-card stat-violet">
+            <i class="bi bi-check-circle-fill"></i>
+            <div class="stat-number" id="stat-completedRequests">-</div>
+            <div class="stat-label">Completed</div>
+          </div>
+          <div class="stat-card stat-pink">
+            <i class="bi bi-box-seam-fill"></i>
+            <div class="stat-number" id="stat-totalMaterials">-</div>
+            <div class="stat-label">Material Donations</div>
+          </div>
+          <div class="stat-card stat-orange">
+            <i class="bi bi-shield-exclamation"></i>
+            <div class="stat-number" id="stat-pendingVerifications">-</div>
+            <div class="stat-label">Pending Verifications</div>
+          </div>
+          <div class="stat-card stat-teal">
+            <i class="bi bi-file-earmark-check"></i>
+            <div class="stat-number" id="stat-pendingReports">-</div>
+            <div class="stat-label">Pending Reports</div>
+          </div>
+        </div>
+
+        <!-- Sub-section Tabs -->
+        <div class="section-tabs">
+          <button class="tab-btn active" data-tab="users" onclick="adminTab('users');loadAdminUsers()"><i class="bi bi-people"></i> Users</button>
+          <button class="tab-btn" data-tab="fundRequests" onclick="adminTab('fundRequests');loadAdminFundRequests()"><i class="bi bi-currency-rupee"></i> Fund Requests</button>
+          <button class="tab-btn" data-tab="materialRequests" onclick="adminTab('materialRequests');loadAdminMaterialRequests()"><i class="bi bi-box-seam"></i> Materials</button>
+          <button class="tab-btn" data-tab="beneficiaries" onclick="adminTab('beneficiaries');loadAdminBeneficiaries()"><i class="bi bi-shield-check"></i> Verification</button>
+          <button class="tab-btn" data-tab="expenditures" onclick="adminTab('expenditures');loadAdminExpenditures()"><i class="bi bi-receipt"></i> Reports</button>
+          <button class="tab-btn" data-tab="inventory" onclick="adminTab('inventory');loadAdminInventory()"><i class="bi bi-archive"></i> Inventory</button>
+          <button class="tab-btn" data-tab="auditLogs" onclick="adminTab('auditLogs');loadAdminAuditLogs()"><i class="bi bi-journal-text"></i> Audit Logs</button>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="admin-users" class="admin-tab-content active">
+          <div class="glass-card">
+            <h3><i class="bi bi-people-fill"></i> All Users</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Registered</th><th>Action</th></tr></thead>
+                <tbody id="adminUsersTable"><tr><td colspan="6"><div class="loading">Loading users</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fund Requests Tab -->
+        <div id="admin-fundRequests" class="admin-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-currency-rupee"></i> All Fund Requests</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>ID</th><th>NGO</th><th>Title</th><th>Category</th><th>Target</th><th>Collected</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody id="adminFundRequestsTable"><tr><td colspan="8"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Material Requests Tab -->
+        <div id="admin-materialRequests" class="admin-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-box-seam"></i> All Material Requests</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>ID</th><th>NGO</th><th>Item</th><th>Category</th><th>Needed</th><th>Received</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody id="adminMaterialRequestsTable"><tr><td colspan="8"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Verification Tab -->
+        <div id="admin-beneficiaries" class="admin-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-shield-check"></i> Verification Queue</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>ID</th><th>User ID</th><th>NGO</th><th>Status</th><th>Contact</th><th>Action</th></tr></thead>
+                <tbody id="adminBeneficiariesTable"><tr><td colspan="6"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Expenditures Tab -->
+        <div id="admin-expenditures" class="admin-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-receipt"></i> Fund Utilization Reports</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>ID</th><th>NGO</th><th>Request</th><th>Amount</th><th>Description</th><th>Proof</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody id="adminExpendituresTable"><tr><td colspan="8"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inventory Tab -->
+        <div id="admin-inventory" class="admin-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-archive"></i> All NGO Inventory</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>NGO</th><th>Item</th><th>Category</th><th>Available</th><th>Reserved</th><th>Distributed</th><th>Damaged</th></tr></thead>
+                <tbody id="adminInventoryTable"><tr><td colspan="7"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audit Logs Tab -->
+        <div id="admin-auditLogs" class="admin-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-journal-text"></i> Audit Logs</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>ID</th><th>Action</th><th>Details</th><th>Target</th><th>Date</th></tr></thead>
+                <tbody id="adminAuditLogsTable"><tr><td colspan="5"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- =================== NGO SECTION =================== -->
+      <section id="ngoSection" class="dashboard-section">
+
+        <!-- NGO Stats -->
+        <div class="stats-grid">
+          <div class="stat-card stat-indigo">
+            <i class="bi bi-currency-rupee"></i>
+            <div class="stat-number" id="ngo-fundsRequested">-</div>
+            <div class="stat-label">Funds Requested</div>
+          </div>
+          <div class="stat-card stat-emerald">
+            <i class="bi bi-check-circle-fill"></i>
+            <div class="stat-number" id="ngo-fundsCollected">-</div>
+            <div class="stat-label">Funds Collected</div>
+          </div>
+          <div class="stat-card stat-amber">
+            <i class="bi bi-arrow-right-circle-fill"></i>
+            <div class="stat-number" id="ngo-fundsRemaining">-</div>
+            <div class="stat-label">Funds Remaining</div>
+          </div>
+          <div class="stat-card stat-rose">
+            <i class="bi bi-receipt-cutoff"></i>
+            <div class="stat-number" id="ngo-fundsSpent">-</div>
+            <div class="stat-label">Funds Spent</div>
+          </div>
+        </div>
+
+        <!-- NGO Tabs -->
+        <div class="section-tabs">
+          <button class="tab-btn active" data-tab="fundRequests" onclick="ngoTab('fundRequests');loadNgoFundRequests()"><i class="bi bi-currency-rupee"></i> My Campaigns</button>
+          <button class="tab-btn" data-tab="createFundRequest" onclick="ngoTab('createFundRequest')"><i class="bi bi-plus-circle"></i> + New Campaign</button>
+          <button class="tab-btn" data-tab="materialRequests" onclick="ngoTab('materialRequests');loadNgoMaterialRequests()"><i class="bi bi-box-seam"></i> Materials</button>
+          <button class="tab-btn" data-tab="createMaterialRequest" onclick="ngoTab('createMaterialRequest')"><i class="bi bi-plus-square"></i> + Material Request</button>
+          <button class="tab-btn" data-tab="inventory" onclick="ngoTab('inventory');loadNgoInventory()"><i class="bi bi-archive"></i> Inventory</button>
+          <button class="tab-btn" data-tab="expenditures" onclick="ngoTab('expenditures');loadNgoExpenditures()"><i class="bi bi-receipt-cutoff"></i> Upload Bills</button>
+          <button class="tab-btn" data-tab="donors" onclick="ngoTab('donors');loadNgoDonations()"><i class="bi bi-heart-fill"></i> Recent Donors</button>
+        </div>
+
+        <!-- NGO Fund Requests -->
+        <div id="ngo-fundRequests" class="ngo-tab-content active">
+          <div class="glass-card">
+            <h3><i class="bi bi-currency-rupee"></i> My Fund Campaigns</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>Title</th><th>Category</th><th>Target</th><th>Progress</th><th>Remaining</th><th>Status</th></tr></thead>
+                <tbody id="ngoFundRequestsTable"><tr><td colspan="6"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Create Fund Request -->
+        <div id="ngo-createFundRequest" class="ngo-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-plus-circle-fill"></i> Create New Fund Campaign</h3>
+            <form id="ngoFundRequestForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Campaign Title <span style="color:red">*</span></label>
+                  <input type="text" name="title" class="form-control" placeholder="e.g., Flood Relief 2026" required>
+                </div>
+                <div class="form-group">
+                  <label>Category</label>
+                  <select name="category" class="form-control">
+                    <option value="DISASTER">Disaster Relief</option>
+                    <option value="EDUCATION">Education</option>
+                    <option value="MEDICAL">Medical</option>
+                    <option value="FOOD">Food & Nutrition</option>
+                    <option value="SHELTER">Shelter</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Description <span style="color:red">*</span></label>
+                <textarea name="description" class="form-control" rows="4" placeholder="Describe the campaign and how funds will be used..." required></textarea>
+              </div>
+              <div class="form-group">
+                <label>Target Amount (₹) <span style="color:red">*</span></label>
+                <input type="number" name="targetAmount" class="form-control" placeholder="e.g., 500000" min="1000" required>
+              </div>
+              <div style="display:flex;gap:1rem">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-rocket-takeoff"></i> Launch Campaign</button>
+                <button type="reset" class="btn btn-secondary"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Material Requests -->
+        <div id="ngo-materialRequests" class="ngo-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-box-seam"></i> My Material Requests</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>Item</th><th>Category</th><th>Needed</th><th>Received</th><th>Remaining</th><th>Status</th></tr></thead>
+                <tbody id="ngoMaterialRequestsTable"><tr><td colspan="6"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Create Material Request -->
+        <div id="ngo-createMaterialRequest" class="ngo-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-plus-square-fill"></i> Create Material Request</h3>
+            <form id="ngoMaterialRequestForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Item Name <span style="color:red">*</span></label>
+                  <input type="text" name="itemName" class="form-control" placeholder="e.g., Winter Blankets" required>
+                </div>
+                <div class="form-group">
+                  <label>Category</label>
+                  <select name="category" class="form-control">
+                    <option value="CLOTHING">Clothing</option>
+                    <option value="FOOD">Food</option>
+                    <option value="EDUCATION">Education</option>
+                    <option value="MEDICAL">Medical Supplies</option>
+                    <option value="SHELTER">Shelter Materials</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" class="form-control" rows="2" placeholder="Describe the material and its purpose..."></textarea>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Quantity Needed <span style="color:red">*</span></label>
+                  <input type="number" name="quantityNeeded" class="form-control" placeholder="e.g., 200" min="1" required>
+                </div>
+                <div class="form-group">
+                  <label>Deadline</label>
+                  <input type="date" name="deadline" class="form-control">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Delivery Location <span style="color:red">*</span></label>
+                <input type="text" name="deliveryLocation" class="form-control" placeholder="e.g., NGO Headquarters, Mumbai" required>
+              </div>
+              <div style="display:flex;gap:1rem">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i> Submit Request</button>
+                <button type="reset" class="btn btn-secondary"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- NGO Inventory -->
+        <div id="ngo-inventory" class="ngo-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-archive"></i> My Inventory</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>Item</th><th>Category</th><th>Available</th><th>Reserved</th><th>Distributed</th><th>Damaged</th></tr></thead>
+                <tbody id="ngoInventoryTable"><tr><td colspan="6"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- NGO Expenditures -->
+        <div id="ngo-expenditures" class="ngo-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-receipt-cutoff"></i> Upload Fund Utilization Proof</h3>
+            <form id="ngoExpenditureForm">
+              <div class="form-group">
+                <label>Campaign / Fund Request <span style="color:red">*</span></label>
+                <select name="requestId" id="ngoExpRequestSelect" class="form-control">
+                  <option value="">Select campaign...</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Amount Spent (₹) <span style="color:red">*</span></label>
+                  <input type="number" name="amount" class="form-control" placeholder="e.g., 50000" min="1" required>
+                </div>
+                <div class="form-group">
+                  <label>Proof Document (link or filename)</label>
+                  <input type="text" name="proofDocument" class="form-control" placeholder="e.g., https://... or receipt_jul2026.pdf">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Description / Purpose <span style="color:red">*</span></label>
+                <textarea name="description" class="form-control" rows="3" placeholder="Describe what the funds were spent on..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary"><i class="bi bi-upload"></i> Submit Report</button>
+            </form>
+            <hr>
+            <h4><i class="bi bi-clock-history"></i> My Utilization Reports</h4>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>Campaign</th><th>Amount</th><th>Description</th><th>Proof</th><th>Status</th></tr></thead>
+                <tbody id="ngoExpendituresList"><tr><td colspan="5"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- NGO Donors -->
+        <div id="ngo-donors" class="ngo-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-heart-fill"></i> Recent Donations to My Campaigns</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>Donor ID</th><th>Campaign</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+                <tbody id="ngoDonorsTable"><tr><td colspan="5"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- =================== DONOR SECTION =================== -->
+      <section id="donorSection" class="dashboard-section">
+
+        <!-- Donor Stats -->
+        <div class="stats-grid">
+          <div class="stat-card stat-indigo">
+            <i class="bi bi-currency-rupee"></i>
+            <div class="stat-number" id="donor-totalDonated">-</div>
+            <div class="stat-label">Total Donated</div>
+          </div>
+          <div class="stat-card stat-emerald">
+            <i class="bi bi-heart-fill"></i>
+            <div class="stat-number" id="donor-donationCount">-</div>
+            <div class="stat-label">Donations Made</div>
+          </div>
+          <div class="stat-card stat-violet">
+            <i class="bi bi-box-seam-fill"></i>
+            <div class="stat-number" id="donor-materialCount">-</div>
+            <div class="stat-label">Materials Donated</div>
+          </div>
+          <div class="stat-card stat-amber">
+            <i class="bi bi-people-fill"></i>
+            <div class="stat-number" id="donor-impactBeneficiaries">-</div>
+            <div class="stat-label">Impact Score</div>
+          </div>
+        </div>
+
+        <!-- Donor Tabs -->
+        <div class="section-tabs">
+          <button class="tab-btn active" data-tab="browse" onclick="donorTab('browse');loadDonorFundRequests()"><i class="bi bi-search-heart"></i> Browse Campaigns</button>
+          <button class="tab-btn" data-tab="material" onclick="donorTab('material');loadDonorMaterialRequests()"><i class="bi bi-box-seam"></i> Material Requests</button>
+          <button class="tab-btn" data-tab="history" onclick="donorTab('history');loadDonorHistory()"><i class="bi bi-clock-history"></i> My History</button>
+          <button class="tab-btn" data-tab="tracking" onclick="donorTab('tracking');loadDonorTracking()"><i class="bi bi-truck"></i> Delivery Tracking</button>
+        </div>
+
+        <!-- Browse Fund Campaigns -->
+        <div id="donor-browse" class="donor-tab-content active">
+          <div class="glass-card">
+            <h3><i class="bi bi-search-heart"></i> Browse Open Campaigns</h3>
+            <div class="search-bar">
+              <input type="text" id="donorSearchFund" placeholder="Search campaigns..." class="form-control" style="max-width:300px">
+              <select id="donorFilterCategory" class="form-control" style="max-width:200px">
+                <option value="">All Categories</option>
+                <option value="DISASTER">Disaster Relief</option>
+                <option value="EDUCATION">Education</option>
+                <option value="MEDICAL">Medical</option>
+                <option value="FOOD">Food & Nutrition</option>
+                <option value="SHELTER">Shelter</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+            <div id="donorFundCards" class="fund-cards-grid">
+              <div class="loading" style="padding:2rem;grid-column:1/-1">Loading campaigns</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Browse Material Requests -->
+        <div id="donor-material" class="donor-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-box-seam"></i> Open Material Requests</h3>
+            <div id="donorMaterialCards" class="fund-cards-grid">
+              <div class="loading" style="padding:2rem;grid-column:1/-1">Loading material requests</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Donation History -->
+        <div id="donor-history" class="donor-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-currency-rupee"></i> My Fund Donation History</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>Date</th><th>Campaign</th><th>Amount</th><th>Status</th></tr></thead>
+                <tbody id="donorHistoryTable"><tr><td colspan="4"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="glass-card">
+            <h3><i class="bi bi-box-seam"></i> My Material Donation History</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>Item</th><th>Qty</th><th>Courier</th><th>Tracking #</th><th>Status</th><th>Receipt</th></tr></thead>
+                <tbody id="donorMaterialHistoryTable"><tr><td colspan="6"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Delivery Tracking -->
+        <div id="donor-tracking" class="donor-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-truck"></i> Delivery Tracking</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>Item</th><th>Courier</th><th>Tracking #</th><th>Expected</th><th>Status</th><th>Receipt</th></tr></thead>
+                <tbody id="donorTrackingTable"><tr><td colspan="6"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- =================== BENEFICIARY SECTION =================== -->
+      <section id="beneficiarySection" class="dashboard-section">
+
+        <!-- Beneficiary Stats -->
+        <div class="stats-grid">
+          <div class="stat-card stat-blue">
+            <i class="bi bi-list-check"></i>
+            <div class="stat-number" id="ben-requestCount">-</div>
+            <div class="stat-label">My Requests</div>
+          </div>
+          <div class="stat-card stat-emerald">
+            <i class="bi bi-gift-fill"></i>
+            <div class="stat-number" id="ben-allocatedCount">-</div>
+            <div class="stat-label">Allocations Received</div>
+          </div>
+          <div class="stat-card stat-indigo">
+            <i class="bi bi-check2-all"></i>
+            <div class="stat-number" id="ben-confirmedCount">-</div>
+            <div class="stat-label">Confirmed Receipts</div>
+          </div>
+          <div class="stat-card stat-amber">
+            <i class="bi bi-hourglass-split"></i>
+            <div class="stat-number" id="ben-pendingCount">-</div>
+            <div class="stat-label">Pending Requests</div>
+          </div>
+        </div>
+
+        <!-- Beneficiary Tabs -->
+        <div class="section-tabs">
+          <button class="tab-btn active" data-tab="requests" onclick="benTab('requests');loadBeneficiaryRequests()"><i class="bi bi-list-check"></i> My Requests</button>
+          <button class="tab-btn" data-tab="createRequest" onclick="benTab('createRequest')"><i class="bi bi-plus-circle"></i> + New Request</button>
+          <button class="tab-btn" data-tab="allocations" onclick="benTab('allocations');loadBeneficiaryAllocations()"><i class="bi bi-gift"></i> My Allocations</button>
+          <button class="tab-btn" data-tab="confirmations" onclick="benTab('confirmations');loadBeneficiaryConfirmations()"><i class="bi bi-check2-circle"></i> Confirm Receipt</button>
+        </div>
+
+        <!-- My Requests -->
+        <div id="ben-requests" class="ben-tab-content active">
+          <div class="glass-card">
+            <h3><i class="bi bi-list-check"></i> My Assistance Requests</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>Type</th><th>Item / Amount</th><th>Quantity</th><th>Urgency</th><th>Status</th><th>Date</th></tr></thead>
+                <tbody id="benRequestsTable"><tr><td colspan="6"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Create Request -->
+        <div id="ben-createRequest" class="ben-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-plus-circle-fill"></i> Submit Assistance Request</h3>
+            <form id="benRequestForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Assistance Type</label>
+                  <select name="assistanceCategory" class="form-control" onchange="toggleBenFields(this.value)">
+                    <option value="MATERIAL">Material Assistance</option>
+                    <option value="FUND">Financial Assistance</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Urgency Level</label>
+                  <select name="urgency" class="form-control">
+                    <option value="NORMAL">Normal</option>
+                    <option value="HIGH">High Priority</option>
+                    <option value="CRITICAL">Critical / Emergency</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="materialFields">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Item Name</label>
+                    <input type="text" name="itemName" class="form-control" placeholder="e.g., Rice, Blankets, Medicines">
+                  </div>
+                  <div class="form-group">
+                    <label>Quantity Needed</label>
+                    <input type="number" name="requestedQuantity" class="form-control" placeholder="e.g., 10" min="1">
+                  </div>
+                </div>
+              </div>
+
+              <div id="fundFields" style="display:none">
+                <div class="form-group">
+                  <label>Amount Needed (₹)</label>
+                  <input type="number" name="requestedAmount" class="form-control" placeholder="e.g., 15000" min="100">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Reason / Description <span style="color:red">*</span></label>
+                <textarea name="reason" class="form-control" rows="4" placeholder="Explain why you need this assistance..." required></textarea>
+              </div>
+
+              <div style="display:flex;gap:1rem">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i> Submit Request</button>
+                <button type="reset" class="btn btn-secondary"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Allocations -->
+        <div id="ben-allocations" class="ben-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-gift-fill"></i> Allocations from NGO</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>NGO</th><th>Type</th><th>Amount / Qty</th><th>Status</th><th>Date</th></tr></thead>
+                <tbody id="benAllocationsTable"><tr><td colspan="5"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirmations -->
+        <div id="ben-confirmations" class="ben-tab-content">
+          <div class="glass-card">
+            <h3><i class="bi bi-check2-circle"></i> Confirm Receipt of Assistance</h3>
+            <p class="text-muted" style="margin-bottom:1.25rem">Confirm that you have received the allocated assistance from the NGO.</p>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>NGO</th><th>Type</th><th>Details</th><th>Status</th><th>OTP/Code</th><th>Action</th></tr></thead>
+                <tbody id="benConfirmTable"><tr><td colspan="6"><div class="loading">Loading</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- =================== DONATE MODAL =================== -->
+  <div id="donateModal" class="modal-overlay" style="display:none">
+    <div class="modal-box glass-card">
+      <button class="modal-close" onclick="document.getElementById('donateModal').style.display='none'">
+        <i class="bi bi-x-lg"></i>
+      </button>
+      <i class="bi bi-heart-fill" style="font-size:2.5rem;color:#4F46E5;display:block;margin-bottom:1rem"></i>
+      <h3>Make a Donation</h3>
+      <p id="modalRequestTitle">Contributing to this campaign</p>
+      <form id="donateForm">
+        <input type="hidden" id="modalRequestId">
+        <div class="form-group">
+          <label for="donateAmount">Donation Amount (₹)</label>
+          <input type="number" id="donateAmount" class="form-control" min="1" placeholder="Enter amount..." required>
+          <!-- Quick amount buttons -->
+          <div style="display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap">
+            <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('donateAmount').value=100">₹100</button>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('donateAmount').value=500">₹500</button>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('donateAmount').value=1000">₹1,000</button>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('donateAmount').value=5000">₹5,000</button>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('donateAmount').value=10000">₹10,000</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;margin-top:0.5rem">
+          <button type="submit" class="btn btn-primary" style="flex:1"><i class="bi bi-heart"></i> Confirm Donation</button>
+          <button type="button" class="btn btn-secondary" onclick="document.getElementById('donateModal').style.display='none'">Cancel</button>
+        </div>
+      </form>
     </div>
-</div>
+  </div>
 
-<div class="layout">
+  <!-- Toast Container -->
+  <div id="toastContainer"></div>
 
-    <!-- ===== SIDEBAR ===== -->
-    <div class="sidebar">
-        <div class="sidebar-section-label">Navigation</div>
-
-        <button class="sidebar-link" onclick="showSection('adminSection')">
-            <i class="bi bi-speedometer2"></i> Admin Dashboard
-        </button>
-        <button class="sidebar-link" onclick="showSection('ngoSection')">
-            <i class="bi bi-building"></i> NGO Dashboard
-        </button>
-        <button class="sidebar-link" onclick="showSection('donorSection')">
-            <i class="bi bi-cash-stack"></i> Donor Dashboard
-        </button>
-        <button class="sidebar-link" onclick="showSection('beneficiarySection')">
-            <i class="bi bi-person-heart"></i> Beneficiary Dashboard
-        </button>
-    </div>
-
-    <!-- ===== MAIN ===== -->
-    <div class="main">
-
-        <!-- ===== ADMIN SECTION ===== -->
-        <div id="adminSection" class="dashboard-section">
-            <div class="page-header">
-                <h2><i class="bi bi-speedometer2"></i> Administrator Dashboard</h2>
-                <p>Manage users, NGOs and beneficiary applications.</p>
-            </div>
-
-            <div class="stat-cards">
-                <div class="stat-card">
-                    <div class="stat-icon blue"><i class="bi bi-people-fill"></i></div>
-                    <div class="stat-info">
-                        <h3 id="userCount">0</h3>
-                        <p>Total Users</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon green"><i class="bi bi-building"></i></div>
-                    <div class="stat-info">
-                        <h3 id="ngoCount">0</h3>
-                        <p>NGOs</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon orange"><i class="bi bi-person-heart"></i></div>
-                    <div class="stat-info">
-                        <h3 id="beneficiaryCount">0</h3>
-                        <p>Beneficiaries</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon purple"><i class="bi bi-cash-stack"></i></div>
-                    <div class="stat-info">
-                        <h3 id="requestCount">0</h3>
-                        <p>Donation Requests</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon green"><i class="bi bi-box-seam-fill"></i></div>
-                    <div class="stat-info">
-                        <h3 id="matDonCount">0</h3>
-                        <p>Material Donations</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon red"><i class="bi bi-currency-rupee"></i></div>
-                    <div class="stat-info">
-                        <h3 id="expTotal">₹0</h3>
-                        <p>Total Fund Spent</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-people-fill"></i> Registered Users</h5>
-                </div>
-                <div class="card-body" style="padding:0;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                            </tr>
-                        </thead>
-                        <tbody id="userTable">
-                            <tr><td colspan="4"><div class="empty-state"><i class="bi bi-hourglass-split"></i><p>Loading users…</p></div></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-person-check-fill"></i> Beneficiary Applications</h5>
-                </div>
-                <div class="card-body" style="padding:0;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>User ID</th>
-                                <th>Purpose</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="beneficiaryAdminTable"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Admin: Add Material Donation -->
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-box-seam-fill"></i> Add Material Donation</h5>
-                </div>
-                <div class="card-body">
-                    <div class="form-row">
-                        <div>
-                            <label class="form-label">Donor ID</label>
-                            <input type="number" id="matDonorId" class="form-control" placeholder="Enter donor user ID">
-                        </div>
-                        <div>
-                            <label class="form-label">Item Description</label>
-                            <input type="text" id="matItemDesc" class="form-control" placeholder="e.g. Winter clothes, Rice bags">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div>
-                            <label class="form-label">Quantity</label>
-                            <input type="number" id="matQty" class="form-control" placeholder="Number of items" min="1">
-                        </div>
-                        <div>
-                            <label class="form-label">Donation Date</label>
-                            <input type="date" id="matDate" class="form-control">
-                        </div>
-                    </div>
-                    <button class="btn-primary" onclick="submitMaterialDonation()">
-                        <i class="bi bi-gift-fill"></i> Add Material Donation
-                    </button>
-                </div>
-            </div>
-
-            <!-- Material Donations Admin Table -->
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-box-seam-fill"></i> Material Donations</h5>
-                    <button class="btn-primary" style="padding:7px 16px;font-size:13px;" onclick="exportCSV('adminMatDonTable','material_donations')"><i class="bi bi-download"></i> Export CSV</button>
-                </div>
-                <div class="card-body" style="padding:0;">
-                    <table class="data-table" id="adminMatDonTable">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Donor ID</th>
-                                <th>Item Description</th>
-                                <th>Quantity</th>
-                                <th>Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminMatDonBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Admin: Add Fund Expenditure -->
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-receipt-cutoff"></i> Add Fund Expenditure</h5>
-                </div>
-                <div class="card-body">
-                    <div class="form-row">
-                        <div>
-                            <label class="form-label">NGO ID</label>
-                            <input type="number" id="expNgoId" class="form-control" placeholder="Enter NGO user ID">
-                        </div>
-                        <div>
-                            <label class="form-label">Purpose</label>
-                            <input type="text" id="expPurpose" class="form-control" placeholder="e.g. Medical supplies, Food distribution">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div>
-                            <label class="form-label">Amount (₹)</label>
-                            <input type="number" id="expAmount" class="form-control" placeholder="Enter amount spent">
-                        </div>
-                        <div>
-                            <label class="form-label">Date Spent</label>
-                            <input type="date" id="expDate" class="form-control">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="form-label">Linked Material Donation ID <span style="color:#b0bec5;font-weight:400">(optional)</span></label>
-                        <input type="number" id="expMatId" class="form-control" placeholder="Material Donation ID (if any)" style="max-width:300px">
-                    </div>
-                    <button class="btn-primary" onclick="recordExpenditure()">
-                        <i class="bi bi-plus-lg"></i> Add Expenditure
-                    </button>
-                </div>
-            </div>
-
-            <!-- Fund Expenditures Admin Table -->
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-receipt-cutoff"></i> Fund Expenditures</h5>
-                    <button class="btn-primary" style="padding:7px 16px;font-size:13px;" onclick="exportCSV('adminExpTable','fund_expenditures')"><i class="bi bi-download"></i> Export CSV</button>
-                </div>
-                <div class="card-body" style="padding:0;">
-                    <table class="data-table" id="adminExpTable">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>NGO ID</th>
-                                <th>Purpose</th>
-                                <th>Amount (₹)</th>
-                                <th>Linked Mat. ID</th>
-                                <th>Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminExpBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== NGO SECTION ===== -->
-        <div id="ngoSection" class="dashboard-section">
-            <div class="page-header">
-                <h2><i class="bi bi-building"></i> NGO Dashboard</h2>
-                <p>Create donation requests and track your fund delivery &amp; expenditures.</p>
-            </div>
-
-            <!-- NGO Stat Cards -->
-            <div class="summary-banner">
-                <div class="summary-item blue">
-                    <div class="s-val" id="ngoTotalCollected">₹0</div>
-                    <div class="s-label">Total Funds Collected</div>
-                </div>
-                <div class="summary-item green">
-                    <div class="s-val" id="ngoTotalSpent">₹0</div>
-                    <div class="s-label">Total Funds Spent</div>
-                </div>
-                <div class="summary-item orange">
-                    <div class="s-val" id="ngoBalance">₹0</div>
-                    <div class="s-label">Remaining Balance</div>
-                </div>
-                <div class="summary-item">
-                    <div class="s-val" id="ngoActiveReqs">0</div>
-                    <div class="s-label">Active Requests</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-plus-circle-fill"></i> Create Donation Request</h5>
-                </div>
-                <div class="card-body">
-                    <div class="form-row">
-                        <div>
-                            <label class="form-label">Request Title</label>
-                            <input type="text" id="title" class="form-control" placeholder="Enter request title">
-                        </div>
-                        <div>
-                            <label class="form-label">Target Amount (₹)</label>
-                            <input type="number" id="targetAmount" class="form-control" placeholder="Enter target amount">
-                        </div>
-                    </div>
-                    <label class="form-label">Description</label>
-                    <textarea id="description" class="form-control form-textarea" rows="3" placeholder="Describe the donation request"></textarea>
-                    <button class="btn-primary" onclick="addRequest()">
-                        <i class="bi bi-plus-lg"></i> Create Request
-                    </button>
-                </div>
-            </div>
-
-            <!-- NGO: Fund Delivery Report -->
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-bar-chart-fill"></i> Fund Delivery Report (Per Request)</h5>
-                </div>
-                <div class="card-body" id="ngoFundReport">
-                    <div class="empty-state"><i class="bi bi-hourglass-split"></i><p>Loading report…</p></div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-list-ul"></i> My Donation Requests</h5>
-                </div>
-                <div class="card-body" style="padding:0;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Target</th>
-                                <th>Collected</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="requestTable"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- NGO: Create Material Request -->
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-box-seam-fill"></i> Create Material Donation Request</h5>
-                </div>
-                <div class="card-body">
-                    <div class="form-row">
-                        <div>
-                            <label class="form-label">Item Name</label>
-                            <input type="text" id="matReqItem" class="form-control" placeholder="e.g. Blankets, Rice bags, Medicines">
-                        </div>
-                        <div>
-                            <label class="form-label">Quantity Needed</label>
-                            <input type="number" id="matReqQty" class="form-control" placeholder="How many items needed" min="1">
-                        </div>
-                    </div>
-                    <label class="form-label">Description</label>
-                    <textarea id="matReqDesc" class="form-control form-textarea" rows="2" placeholder="Why do you need these items?"></textarea>
-                    <button class="btn-primary" onclick="createMatRequest()">
-                        <i class="bi bi-megaphone-fill"></i> Post Material Request
-                    </button>
-                </div>
-            </div>
-
-            <!-- NGO: My Material Requests -->
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-list-check"></i> My Material Requests</h5>
-                </div>
-                <div class="card-body" style="padding:0;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Item</th>
-                                <th>Description</th>
-                                <th>Needed</th>
-                                <th>Received</th>
-                                <th>Progress</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ngoMatReqTable"></tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ===== DONOR SECTION ===== -->
-        <div id="donorSection" class="dashboard-section">
-            <div class="page-header">
-                <h2><i class="bi bi-cash-stack"></i> Donor Dashboard</h2>
-                <p>Browse donation requests, track your contributions and fund impact.</p>
-            </div>
-
-            <!-- Donor Stat Cards -->
-            <div class="summary-banner">
-                <div class="summary-item blue">
-                    <div class="s-val" id="donorTotalAmt">₹0</div>
-                    <div class="s-label">Total Cash Donated</div>
-                </div>
-                <div class="summary-item green">
-                    <div class="s-val" id="donorDonCount">0</div>
-                    <div class="s-label">Donations Made</div>
-                </div>
-                <div class="summary-item orange">
-                    <div class="s-val" id="donorReqCount">0</div>
-                    <div class="s-label">Requests Supported</div>
-                </div>
-                <div class="summary-item">
-                    <div class="s-val" id="donorImpact">0%</div>
-                    <div class="s-label">Avg. Request Funded</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-grid-fill"></i> Available Donation Requests</h5>
-                </div>
-                <div class="card-body" style="padding:0;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Target</th>
-                                <th>Collected</th>
-                                <th>Status</th>
-                                <th>Donate</th>
-                            </tr>
-                        </thead>
-                        <tbody id="donorRequestTable"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Donor: Fund Tracking -->
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-graph-up-arrow"></i> My Fund Tracking (Where Your Money Goes)</h5>
-                </div>
-                <div class="card-body" id="donorFundTrack">
-                    <div class="empty-state"><i class="bi bi-hourglass-split"></i><p>Loading…</p></div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-clock-history"></i> My Donation History (NGOs)</h5>
-                </div>
-                <div class="card-body" style="padding:0;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Request</th>
-                                <th>Amount</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="donationHistoryTable"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-clock-history"></i> My Beneficiary Donations</h5>
-                </div>
-                <div class="card-body" style="padding:0;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Purpose</th>
-                                <th>Amount</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="donorBenDonHistoryTable"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-box-seam"></i> My Material Contributions</h5>
-                </div>
-                <div class="card-body" style="padding:0;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Quantity</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="donorMatDonHistoryTable"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Donor: Material Donation Requests -->
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-box-seam-fill"></i> Material Donation Requests from NGOs</h5>
-                </div>
-                <div class="card-body" style="padding:0;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>NGO</th>
-                                <th>Item Needed</th>
-                                <th>Description</th>
-                                <th>Needed</th>
-                                <th>Received</th>
-                                <th>Progress</th>
-                                <th>Fulfill</th>
-                            </tr>
-                        </thead>
-                        <tbody id="donorMatReqTable"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Donor: Beneficiary Needs -->
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-person-heart"></i> Beneficiary Needs (Community Help Requests)</h5>
-                </div>
-                <div class="card-body" id="donorBenNeeds">
-                    <div class="empty-state"><i class="bi bi-hourglass-split"></i><p>Loading…</p></div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ===== BENEFICIARY SECTION ===== -->
-        <div id="beneficiarySection" class="dashboard-section">
-            <div class="page-header">
-                <h2><i class="bi bi-person-heart"></i> Beneficiary Dashboard</h2>
-                <p>Apply for financial assistance and track your application status.</p>
-            </div>
-
-            <!-- Beneficiary Stat Cards -->
-            <div class="summary-banner">
-                <div class="summary-item">
-                    <div class="s-val" id="benTotalApps">0</div>
-                    <div class="s-label">Total Applications</div>
-                </div>
-                <div class="summary-item green">
-                    <div class="s-val" id="benApproved">0</div>
-                    <div class="s-label">Approved</div>
-                </div>
-                <div class="summary-item orange">
-                    <div class="s-val" id="benPending">0</div>
-                    <div class="s-label">Pending</div>
-                </div>
-                <div class="summary-item red">
-                    <div class="s-val" id="benRejected">0</div>
-                    <div class="s-label">Rejected</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-send-fill"></i> Apply for Financial Assistance</h5>
-                </div>
-                <div class="card-body">
-                    <div class="form-row">
-                        <div>
-                            <label class="form-label">Full Name</label>
-                            <input type="text" id="beneficiaryName" class="form-control" placeholder="Enter your full name">
-                        </div>
-                        <div>
-                            <label class="form-label">Purpose</label>
-                            <input type="text" id="purpose" class="form-control" placeholder="Education / Medical / Food / Housing">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="form-label">Required Amount (₹)</label>
-                        <input type="number" id="requiredAmount" class="form-control" placeholder="Enter required amount">
-                    </div>
-                    <label class="form-label">Description</label>
-                    <textarea id="beneficiaryDescription" class="form-control form-textarea" rows="3" placeholder="Describe your situation"></textarea>
-                    <button class="btn-primary" onclick="applyBeneficiary()">
-                        <i class="bi bi-send-fill"></i> Submit Application
-                    </button>
-                </div>
-            </div>
-
-            <!-- Application Status Tracker -->
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-diagram-3-fill"></i> Application Status Tracker</h5>
-                </div>
-                <div class="card-body" id="benStatusTracker">
-                    <div class="empty-state"><i class="bi bi-hourglass-split"></i><p>Loading…</p></div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-clipboard-check-fill"></i> My Applications</h5>
-                </div>
-                <div class="card-body" style="padding:0;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Purpose</th>
-                                <th>Target</th>
-                                <th>Raised</th>
-                                <th>Progress</th>
-                                <th>Description</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="beneficiaryAppTable"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Beneficiary: Create Material Request -->
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-box-seam-fill"></i> Request Material Assistance</h5>
-                </div>
-                <div class="card-body">
-                    <div class="form-row">
-                        <div>
-                            <label class="form-label">Item Name</label>
-                            <input type="text" id="benMatReqItem" class="form-control" placeholder="e.g. Blankets, Textbooks, Medical Equipment">
-                        </div>
-                        <div>
-                            <label class="form-label">Quantity Needed</label>
-                            <input type="number" id="benMatReqQty" class="form-control" placeholder="How many items needed" min="1">
-                        </div>
-                    </div>
-                    <label class="form-label">Description</label>
-                    <textarea id="benMatReqDesc" class="form-control form-textarea" rows="2" placeholder="Why do you need these items?"></textarea>
-                    <button class="btn-primary" onclick="createBenMatRequest()">
-                        <i class="bi bi-megaphone-fill"></i> Post Material Request
-                    </button>
-                </div>
-            </div>
-
-            <!-- Beneficiary: My Material Requests -->
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-list-check"></i> My Material Requests</h5>
-                </div>
-                <div class="card-body" style="padding:0;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Item</th>
-                                <th>Description</th>
-                                <th>Needed</th>
-                                <th>Received</th>
-                                <th>Progress</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="benMatReqTable"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-collection-fill"></i> Active NGO Donation Requests</h5>
-                </div>
-                <div class="card-body" style="padding:0;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Target</th>
-                                <th>Collected</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="beneficiaryRequestTable"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-    </div><!-- end .main -->
-</div><!-- end .layout -->
-
-<script>
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) {
-        window.location.href = "login.html";
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script>
+    // Toggle material/fund fields in beneficiary form
+    function toggleBenFields(type) {
+      const materialFields = document.getElementById('materialFields');
+      const fundFields = document.getElementById('fundFields');
+      if (type === 'MATERIAL') {
+        materialFields.style.display = 'block';
+        fundFields.style.display = 'none';
+      } else {
+        materialFields.style.display = 'none';
+        fundFields.style.display = 'block';
+      }
     }
-
-    // Role-based UI restriction: hide sidebar options not applicable to the logged-in role
-    const role = user.role ? user.role.toUpperCase() : '';
-
-    // Allowed section IDs per role
-    const roleAllowedSections = {
-        ADMIN:       ['adminSection', 'ngoSection', 'donorSection', 'beneficiarySection'],
-        NGO:         ['ngoSection'],
-        DONOR:       ['donorSection'],
-        BENEFICIARY: ['beneficiarySection']
-    };
-    const allowed = roleAllowedSections[role] || [];
-
-    // Hide sidebar buttons not relevant to this role
-    document.querySelectorAll('.sidebar-link').forEach(link => {
-        const onclick = link.getAttribute('onclick') || '';
-        const match   = onclick.match(/showSection\('(\w+)'\)/);
-        if (match && !allowed.includes(match[1])) {
-            link.style.display = 'none';
-        }
-    });
-
-    function showSection(sectionId) {
-        if (!allowed.includes(sectionId)) return; // block unauthorized access
-        document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-        const target = document.getElementById(sectionId);
-        if (target) target.classList.add('active');
-        // Highlight the matching sidebar button
-        document.querySelectorAll('.sidebar-link').forEach(l => {
-            if ((l.getAttribute('onclick') || '').includes(sectionId)) l.classList.add('active');
-        });
-    }
-
-const BASE = "http://localhost:8081";
-
-function badgeClass(status) {
-    if (!status) return "badge-info";
-    switch(status.toUpperCase()) {
-        case "ACTIVE": case "APPROVED": return "badge-success";
-        case "PENDING": return "badge-pending";
-        case "REJECTED": case "CLOSED": return "badge-danger";
-        default: return "badge-info";
-    }
-}
-
-document.getElementById("welcomeUser").textContent = user.name + " (" + user.role + ")";
-
-// Auto-show based on role
-if (user.role === "ADMIN") {
-    showSection("adminSection");
-    loadUsers();
-    loadBeneficiaryApplications();
-    loadAdminMaterialDonations();
-    loadAdminExpenditures();
-} else if (user.role === "NGO") {
-    showSection("ngoSection");
-    loadRequests();
-    loadNgoStats();
-    loadNgoMatRequests();
-} else if (user.role === "DONOR") {
-    showSection("donorSection");
-    loadRequests();
-    loadMyDonations();
-    loadMyMaterialDonations();
-    loadDonorStats();
-    loadDonorMatRequests();
-    loadDonorBeneficiaryNeeds();
-} else if (user.role === "BENEFICIARY") {
-    showSection("beneficiarySection");
-    loadRequests();
-    loadMyApplications();
-    loadBeneficiaryStats();
-    loadBenMatRequests();
-}
-
-function logout() {
-    localStorage.clear();
-    window.location.href = "login.html";
-}
-
-async function loadUsers() {
-    const response = await fetch(BASE + "/users");
-    const users    = await response.json();
-    let rows = "", ngo = 0, beneficiary = 0;
-
-    users.forEach(u => {
-        rows += `<tr>
-            <td>${u.id}</td>
-            <td><strong>${u.name}</strong></td>
-            <td>${u.email}</td>
-            <td><span class="badge badge-info">${u.role}</span></td>
-        </tr>`;
-        if (u.role === "NGO") ngo++;
-        if (u.role === "BENEFICIARY") beneficiary++;
-    });
-
-    document.getElementById("userTable").innerHTML = rows || `<tr><td colspan="4"><div class="empty-state"><i class="bi bi-people"></i><p>No users found.</p></div></td></tr>`;
-    document.getElementById("userCount").textContent = users.length;
-    document.getElementById("ngoCount").textContent  = ngo;
-    document.getElementById("beneficiaryCount").textContent = beneficiary;
-}
-
-async function loadRequests() {
-    const response = await fetch(BASE + "/requests");
-    const requests = await response.json();
-    let ngoRows = "", donorRows = "", beneficiaryRows = "";
-
-    requests.forEach(r => {
-        const badge = `<span class="badge ${badgeClass(r.status)}">${r.status}</span>`;
-        const remaining = Math.max(0, r.targetAmount - (r.collectedAmount || 0));
-        ngoRows += `<tr>
-            <td>${r.id}</td><td><strong>${r.title}</strong></td><td>${r.description}</td>
-            <td>₹${r.targetAmount}</td>
-            <td>
-                ₹${r.collectedAmount || 0}<br>
-                <small style="color:#d32f2f;">(Remaining: ₹${remaining})</small>
-            </td>
-            <td>${badge}</td>
-        </tr>`;
-        donorRows += `<tr>
-            <td>${r.id}</td><td><strong>${r.title}</strong></td><td>${r.description}</td>
-            <td>₹${r.targetAmount}</td><td>₹${r.collectedAmount}</td><td>${badge}</td>
-            <td><button class="btn-donate-sm" onclick="donate(${r.id})"><i class="bi bi-heart-fill"></i> Donate</button></td>
-        </tr>`;
-        beneficiaryRows += `<tr>
-            <td>${r.id}</td><td><strong>${r.title}</strong></td><td>${r.description}</td>
-            <td>₹${r.targetAmount}</td><td>₹${r.collectedAmount}</td><td>${badge}</td>
-        </tr>`;
-    });
-
-    if (document.getElementById('requestTable'))            document.getElementById('requestTable').innerHTML            = ngoRows || `<tr><td colspan="6"><div class="empty-state"><i class="bi bi-inbox"></i><p>No requests yet.</p></div></td></tr>`;
-    if (document.getElementById('donorRequestTable'))        document.getElementById('donorRequestTable').innerHTML        = donorRows || `<tr><td colspan="7"><div class="empty-state"><i class="bi bi-inbox"></i><p>No requests available.</p></div></td></tr>`;
-    if (document.getElementById('beneficiaryRequestTable')) document.getElementById('beneficiaryRequestTable').innerHTML  = beneficiaryRows || `<tr><td colspan="6"><div class="empty-state"><i class="bi bi-inbox"></i><p>No active requests.</p></div></td></tr>`;
-
-    // requestCount only exists in admin section
-    const reqCountEl = document.getElementById('requestCount');
-    if (reqCountEl) reqCountEl.textContent = requests.length;
-}
-
-async function addRequest() {
-    const title       = document.getElementById("title").value;
-    const description = document.getElementById("description").value;
-    const targetAmount = document.getElementById("targetAmount").value;
-
-    if (!title || !description || !targetAmount) { alert("Please fill all fields."); return; }
-
-    await fetch(BASE + "/requests", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ngoId: user.id, title, description, targetAmount })
-    });
-
-    alert("Donation Request Created Successfully!");
-    document.getElementById("title").value = "";
-    document.getElementById("description").value = "";
-    document.getElementById("targetAmount").value = "";
-    loadRequests();
-}
-
-async function donate(requestId) {
-    let amount = prompt("Enter Donation Amount (₹):");
-    if (!amount) return;
-
-    await fetch(BASE + "/donate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ donorId: user.id, requestId, amount })
-    });
-
-    alert("Thank you for your generous donation!");
-    loadRequests();
-    loadMyDonations();
-}
-
-async function applyBeneficiary() {
-    const application = {
-        userId: user.id,
-        name:   document.getElementById("beneficiaryName").value,
-        purpose: document.getElementById("purpose").value,
-        requiredAmount: document.getElementById("requiredAmount").value,
-        description: document.getElementById("beneficiaryDescription").value,
-        status: "PENDING"
-    };
-
-    const response = await fetch(BASE + "/beneficiaries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(application)
-    });
-
-    const result = await response.text();
-    alert(result);
-
-    document.getElementById("beneficiaryName").value = "";
-    document.getElementById("purpose").value = "";
-    document.getElementById("requiredAmount").value = "";
-    document.getElementById("beneficiaryDescription").value = "";
-    loadMyApplications();
-}
-
-async function loadMyApplications() {
-    try {
-        const response = await fetch(BASE + "/beneficiaries");
-        const applications = await response.json();
-        let rows = "";
-
-        applications.forEach(a => {
-            if (a.userId == user.id) {
-                const target = a.requiredAmount || a.amount || 1;
-                const collected = a.collectedAmount || 0;
-                const pct = Math.min(100, Math.round((collected / target) * 100));
-                const color = pct >= 100 ? 'green' : pct >= 50 ? '' : 'orange';
-
-                rows += `<tr>
-                    <td>${a.id}</td>
-                    <td>${a.purpose}</td>
-                    <td>₹${target.toLocaleString()}</td>
-                    <td>₹${collected.toLocaleString()}</td>
-                    <td>
-                        <div class="progress-wrap" style="margin:0;">
-                            <div class="progress-bar-bg"><div class="progress-bar-fill ${color}" style="width:${pct}%"></div></div>
-                        </div>
-                    </td>
-                    <td>${a.description}</td>
-                    <td><span class="badge ${badgeClass(a.status)}">${a.status}</span></td>
-                </tr>`;
-            }
-        });
-
-        document.getElementById("beneficiaryAppTable").innerHTML = rows || `<tr><td colspan="7"><div class="empty-state"><i class="bi bi-inbox"></i><p>No applications yet.</p></div></td></tr>`;
-    } catch(e) { console.error('loadMyApplications', e); }
-}
-
-async function loadBeneficiaryApplications() {
-    const response = await fetch(BASE + "/beneficiaries");
-    const applications = await response.json();
-    let rows = "";
-
-    applications.forEach(a => {
-        rows += `<tr>
-            <td>${a.id}</td>
-            <td>${a.userId}</td>
-            <td>${a.purpose}</td>
-            <td>₹${a.requiredAmount || a.amount || 0}</td>
-            <td><span class="badge ${badgeClass(a.status)}">${a.status}</span></td>
-            <td>
-                <button class="btn-success-sm" onclick="updateStatus(${a.id},'APPROVED')"><i class="bi bi-check-lg"></i> Approve</button>
-                <button class="btn-danger-sm"  onclick="updateStatus(${a.id},'REJECTED')"><i class="bi bi-x-lg"></i> Reject</button>
-            </td>
-        </tr>`;
-    });
-
-    document.getElementById("beneficiaryAdminTable").innerHTML = rows;
-}
-
-async function updateStatus(id, status) {
-    await fetch(BASE + "/beneficiaries/" + id + "/" + status, { method: "PUT" });
-    alert("Application " + status);
-    loadBeneficiaryApplications();
-}
-
-async function loadMyDonations() {
-    try {
-        const reqResponse = await fetch(BASE + "/requests");
-        const requests    = await reqResponse.json();
-        const requestMap  = {};
-        requests.forEach(r => { requestMap[r.id] = r.title; });
-
-        const response  = await fetch(BASE + "/donations/donor/" + user.id);
-        const donations = await response.json();
-        let rows = "";
-
-        donations.forEach(d => {
-            const title = requestMap[d.requestId] || ("Request #" + d.requestId);
-            rows += `<tr>
-                <td><strong>${title}</strong></td>
-                <td>₹${d.amount}</td>
-                <td>${d.donationDate || 'N/A'}</td>
-            </tr>`;
-        });
-
-        document.getElementById("donationHistoryTable").innerHTML = rows || `<tr><td colspan="3"><div class="empty-state"><i class="bi bi-receipt"></i><p>No donations yet.</p></div></td></tr>`;
-
-        // Also fetch beneficiary donations
-        try {
-            const benRes = await fetch(BASE + "/beneficiaries/donations/donor/" + user.id);
-            const benDons = await benRes.json();
-            let benRows = "";
-            benDons.forEach(d => {
-                benRows += `<tr>
-                    <td><strong>${d.purpose}</strong></td>
-                    <td>₹${d.amount}</td>
-                    <td>${d.donationDate || 'N/A'}</td>
-                </tr>`;
-            });
-            const benTable = document.getElementById("donorBenDonHistoryTable");
-            if (benTable) {
-                benTable.innerHTML = benRows || `<tr><td colspan="3"><div class="empty-state"><i class="bi bi-receipt"></i><p>No beneficiary donations yet.</p></div></td></tr>`;
-            }
-        } catch(e) { console.error("Error loading beneficiary donations:", e); }
-
-    } catch (error) {
-        console.error("Error loading donations:", error);
-    }
-}
-
-// ===== MATERIAL DONATIONS =====
-
-async function submitMaterialDonation() {
-    const donorId         = parseInt(document.getElementById('matDonorId') ? document.getElementById('matDonorId').value : user.id) || user.id;
-    const itemDescription = document.getElementById('matItemDesc').value.trim();
-    const quantity        = parseInt(document.getElementById('matQty').value);
-    const donationDate    = document.getElementById('matDate').value;
-
-    if (!itemDescription || !quantity || !donationDate) {
-        alert('Please fill all material donation fields.');
-        return;
-    }
-
-    const res = await fetch(BASE + '/material-donations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ donorId, itemDescription, quantity, donationDate })
-    });
-    const msg = await res.text();
-    alert(msg);
-    if (document.getElementById('matDonorId')) document.getElementById('matDonorId').value = '';
-    document.getElementById('matItemDesc').value = '';
-    document.getElementById('matQty').value = '';
-    document.getElementById('matDate').value = '';
-    loadAdminMaterialDonations();
-}
-
-async function loadMyMaterialDonations() {
-    try {
-        const res  = await fetch(BASE + '/material-donations/donor/' + user.id);
-        const data = await res.json();
-        let rows = '';
-        data.forEach(d => {
-            rows += `<tr>
-                <td><strong>${d.itemDescription}</strong></td>
-                <td>${d.quantity}</td>
-                <td>${d.donationDate || 'N/A'}</td>
-            </tr>`;
-        });
-        const el1 = document.getElementById('donorMatDonBody'); // if it still exists elsewhere
-        if (el1) el1.innerHTML = rows || `<tr><td colspan="3"><div class="empty-state"><i class="bi bi-inbox"></i><p>No material donations yet.</p></div></td></tr>`;
-        
-        const el2 = document.getElementById('donorMatDonHistoryTable');
-        if (el2) el2.innerHTML = rows || `<tr><td colspan="3"><div class="empty-state"><i class="bi bi-inbox"></i><p>No material donations yet.</p></div></td></tr>`;
-    } catch(e) { console.error('loadMyMaterialDonations', e); }
-}
-
-async function loadAdminMaterialDonations() {
-    try {
-        const res  = await fetch(BASE + '/material-donations');
-        const data = await res.json();
-        let rows = '';
-        data.forEach(d => {
-            rows += `<tr>
-                <td>${d.materialDonationId}</td>
-                <td>${d.donorId}</td>
-                <td>${d.itemDescription}</td>
-                <td>${d.quantity}</td>
-                <td>${d.donationDate || 'N/A'}</td>
-                <td><button class="btn-danger-sm" onclick="deleteMatDon(${d.materialDonationId})"><i class="bi bi-trash"></i> Delete</button></td>
-            </tr>`;
-        });
-        const el = document.getElementById('adminMatDonBody');
-        if (el) el.innerHTML = rows || `<tr><td colspan="6"><div class="empty-state"><i class="bi bi-inbox"></i><p>No material donations yet.</p></div></td></tr>`;
-        const cnt = document.getElementById('matDonCount');
-        if (cnt) cnt.textContent = data.length;
-    } catch(e) { console.error('loadAdminMaterialDonations', e); }
-}
-
-async function deleteMatDon(id) {
-    if (!confirm('Delete this material donation?')) return;
-    await fetch(BASE + '/material-donations/' + id, { method: 'DELETE' });
-    loadAdminMaterialDonations();
-}
-
-// ===== FUND EXPENDITURES =====
-
-async function recordExpenditure() {
-    const ngoIdEl            = document.getElementById('expNgoId');
-    const ngoId              = ngoIdEl ? (parseInt(ngoIdEl.value) || user.id) : user.id;
-    const purpose            = document.getElementById('expPurpose').value.trim();
-    const amount             = parseFloat(document.getElementById('expAmount').value);
-    const spentDate          = document.getElementById('expDate').value;
-    const matIdRaw           = document.getElementById('expMatId').value;
-    const materialDonationId = matIdRaw ? parseInt(matIdRaw) : null;
-
-    if (!purpose || !amount || !spentDate) {
-        alert('Please fill Purpose, Amount and Date.');
-        return;
-    }
-
-    const res = await fetch(BASE + '/expenditures', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ngoId, purpose, amount, spentDate, materialDonationId })
-    });
-    const msg = await res.text();
-    alert(msg);
-    if (ngoIdEl) ngoIdEl.value = '';
-    document.getElementById('expPurpose').value = '';
-    document.getElementById('expAmount').value  = '';
-    document.getElementById('expDate').value    = '';
-    document.getElementById('expMatId').value   = '';
-    loadAdminExpenditures();
-}
-
-async function loadNgoExpenditures() {
-    try {
-        const res  = await fetch(BASE + '/expenditures/ngo/' + user.id);
-        const data = await res.json();
-        let rows = '';
-        data.forEach(e => {
-            rows += `<tr>
-                <td>${e.expenditureId}</td>
-                <td>${e.purpose}</td>
-                <td>₹${e.amount}</td>
-                <td>${e.materialDonationId || '—'}</td>
-                <td>${e.spentDate || 'N/A'}</td>
-                <td><button class="btn-danger-sm" onclick="deleteExp(${e.expenditureId})"><i class="bi bi-trash"></i> Delete</button></td>
-            </tr>`;
-        });
-        const el = document.getElementById('ngoExpBody');
-        if (el) el.innerHTML = rows || `<tr><td colspan="6"><div class="empty-state"><i class="bi bi-inbox"></i><p>No expenditures recorded yet.</p></div></td></tr>`;
-    } catch(e) { console.error('loadNgoExpenditures', e); }
-}
-
-async function loadAdminExpenditures() {
-    try {
-        const res  = await fetch(BASE + '/expenditures');
-        const data = await res.json();
-        let rows = '', total = 0;
-        data.forEach(e => {
-            total += e.amount;
-            rows += `<tr>
-                <td>${e.expenditureId}</td>
-                <td>${e.ngoId}</td>
-                <td>${e.purpose}</td>
-                <td>₹${e.amount}</td>
-                <td>${e.materialDonationId || '—'}</td>
-                <td>${e.spentDate || 'N/A'}</td>
-                <td><button class="btn-danger-sm" onclick="deleteExp(${e.expenditureId})"><i class="bi bi-trash"></i> Delete</button></td>
-            </tr>`;
-        });
-        const el = document.getElementById('adminExpBody');
-        if (el) el.innerHTML = rows || `<tr><td colspan="7"><div class="empty-state"><i class="bi bi-inbox"></i><p>No expenditures yet.</p></div></td></tr>`;
-        const tot = document.getElementById('expTotal');
-        if (tot) tot.textContent = '₹' + total.toFixed(2);
-    } catch(e) { console.error('loadAdminExpenditures', e); }
-}
-
-async function deleteExp(id) {
-    if (!confirm('Delete this expenditure?')) return;
-    await fetch(BASE + '/expenditures/' + id, { method: 'DELETE' });
-    if (user.role === 'ADMIN') loadAdminExpenditures(); else loadNgoExpenditures();
-}
-
-// ===== CSV EXPORT =====
-
-function exportCSV(tableId, filename) {
-    const table = document.getElementById(tableId);
-    if (!table) return;
-    let csv = '';
-    table.querySelectorAll('tr').forEach(row => {
-        const cells = [];
-        row.querySelectorAll('th, td').forEach(cell => {
-            // skip action columns
-            const text = cell.innerText.replace(/[\r\n]+/g, ' ').trim();
-            cells.push('"' + text.replace(/"/g, '""') + '"');
-        });
-        csv += cells.join(',') + '\n';
-    });
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = filename + '_' + new Date().toISOString().slice(0,10) + '.csv';
-    a.click();
-}
-
-// ===== MATERIAL REQUESTS (NGO & DONOR) =====
-
-async function createMatRequest() {
-    const itemName = document.getElementById('matReqItem').value.trim();
-    const qty = parseInt(document.getElementById('matReqQty').value);
-    const desc = document.getElementById('matReqDesc').value.trim();
-
-    if (!itemName || !qty || !desc) {
-        alert("Please fill all fields for the material request.");
-        return;
-    }
-
-    const res = await fetch(BASE + '/material-requests', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ngoId: user.id, itemName: itemName, description: desc, quantityNeeded: qty })
-    });
-    alert(await res.text());
-    
-    document.getElementById('matReqItem').value = '';
-    document.getElementById('matReqQty').value = '';
-    document.getElementById('matReqDesc').value = '';
-    loadNgoMatRequests();
-}
-
-async function loadNgoMatRequests() {
-    try {
-        const res = await fetch(BASE + '/material-requests/ngo/' + user.id);
-        const reqs = await res.json();
-        let rows = "";
-        reqs.forEach(r => {
-            const pct = Math.min(100, Math.round(((r.quantityReceived || 0) / (r.quantityNeeded || 1)) * 100));
-            rows += `<tr>
-                <td>${r.requestId}</td>
-                <td>${r.itemName}</td>
-                <td>${r.description}</td>
-                <td>${r.quantityNeeded}</td>
-                <td>
-                    ${r.quantityReceived || 0}<br>
-                    <small style="color:#d32f2f;">(Remaining: ${Math.max(0, r.quantityNeeded - (r.quantityReceived || 0))})</small>
-                </td>
-                <td>
-                    <div class="progress-wrap" style="margin:0;">
-                        <div class="progress-bar-bg"><div class="progress-bar-fill ${pct>=100?'green':''}" style="width:${pct}%"></div></div>
-                    </div>
-                </td>
-                <td><span class="badge ${badgeClass(r.status)}">${r.status}</span></td>
-                <td>
-                    ${r.status === 'OPEN' ? `<button class="btn-sm btn-danger" onclick="updateMatReqStatus(${r.requestId}, 'CLOSED')">Close</button>` : ''}
-                </td>
-            </tr>`;
-        });
-        document.getElementById('ngoMatReqTable').innerHTML = rows || '<tr><td colspan="8">No material requests.</td></tr>';
-    } catch(e) { console.error('loadNgoMatRequests error:', e); }
-}
-
-async function updateMatReqStatus(id, status) {
-    if(!confirm('Update status to ' + status + '?')) return;
-    const res = await fetch(BASE + `/material-requests/${id}/status/${status}`, { method: 'PUT' });
-    alert(await res.text());
-    loadNgoMatRequests();
-}
-
-async function loadDonorMatRequests() {
-    try {
-        const res = await fetch(BASE + '/material-requests/open');
-        const reqs = await res.json();
-        let rows = "";
-        reqs.forEach(r => {
-            const pct = Math.min(100, Math.round(((r.quantityReceived || 0) / (r.quantityNeeded || 1)) * 100));
-            rows += `<tr>
-                <td>${r.requestId}</td>
-                <td>${r.ngoName}</td>
-                <td><strong>${r.itemName}</strong></td>
-                <td>${r.description}</td>
-                <td>${r.quantityNeeded}</td>
-                <td>${r.quantityReceived}</td>
-                <td>
-                    <div class="progress-wrap" style="margin:0;">
-                        <div class="progress-bar-bg"><div class="progress-bar-fill ${pct>=100?'green':''}" style="width:${pct}%"></div></div>
-                    </div>
-                </td>
-                <td>
-                    <button class="btn-sm btn-primary" onclick="fulfillMatRequest(${r.requestId}, '${r.itemName}')">Fulfill</button>
-                </td>
-            </tr>`;
-        });
-        document.getElementById('donorMatReqTable').innerHTML = rows || '<tr><td colspan="8">No open material requests.</td></tr>';
-    } catch(e) { console.error('loadDonorMatRequests error:', e); }
-}
-
-async function fulfillMatRequest(id, name) {
-    const qtyStr = prompt(`How many ${name} do you want to donate/fulfill?`);
-    if(!qtyStr) return;
-    const qty = parseInt(qtyStr);
-    if(isNaN(qty) || qty <= 0) { alert('Invalid quantity'); return; }
-
-    const res = await fetch(BASE + `/material-requests/${id}/fulfill/${qty}`, { method: 'PUT' });
-    alert(await res.text());
-    loadDonorMatRequests();
-}
-
-// ===== DONOR: BENEFICIARY NEEDS =====
-
-async function loadDonorBeneficiaryNeeds() {
-    try {
-        const res = await fetch(BASE + '/beneficiaries');
-        const all = await res.json();
-        const approved = all.filter(a => (a.status||'').toUpperCase() === 'APPROVED');
-        
-        const needsEl = document.getElementById('donorBenNeeds');
-        if(!needsEl) return;
-        
-        if (approved.length === 0) {
-            needsEl.innerHTML = '<div class="empty-state"><i class="bi bi-inbox"></i><p>No verified community needs at the moment.</p></div>';
-            return;
-        }
-
-        let html = '';
-        approved.forEach(a => {
-            const target = a.requiredAmount || a.amount || 1;
-            const collected = a.collectedAmount || 0;
-            const pct = Math.min(100, Math.round((collected / target) * 100));
-            const color = pct >= 100 ? 'green' : pct >= 50 ? '' : 'orange';
-
-            html += `
-            <div style="margin-bottom:15px;padding:15px;background:#fdfdfd;border-radius:10px;border-left:4px solid #1565C0;box-shadow:0 2px 8px rgba(0,0,0,0.03);">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                    <strong style="font-size:15px;color:#0d1b2a;">${a.purpose}</strong>
-                    <span class="badge badge-success">Verified Need</span>
-                </div>
-                <p style="margin:0 0 10px;font-size:13px;color:#5a6a7a;">${a.description}</p>
-                <div class="progress-wrap" style="margin-bottom:8px;">
-                    <div class="progress-label">
-                        <span>\u20b9${collected.toLocaleString()} raised</span>
-                        <span>${pct}% of \u20b9${target.toLocaleString()}</span>
-                    </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill ${color}" style="width:${pct}%"></div>
-                    </div>
-                </div>
-                <div style="text-align:right;">
-                    <button class="btn-sm btn-primary" onclick="donateToBeneficiaryNeed(${a.id}, '${a.purpose.replace(/'/g, "\\'")}')" ${pct >= 100 ? 'disabled' : ''}>
-                        ${pct >= 100 ? 'Fully Funded' : 'Donate Funds'}
-                    </button>
-                </div>
-            </div>`;
-        });
-        needsEl.innerHTML = html;
-    } catch(e) { console.error('loadDonorBenNeeds error:', e); }
-}
-
-async function donateToBeneficiaryNeed(id, purpose) {
-    const amtStr = prompt(`How much would you like to donate to "${purpose}"? (₹)`);
-    if(!amtStr) return;
-    const amount = parseFloat(amtStr);
-    if(isNaN(amount) || amount <= 0) { alert('Invalid amount'); return; }
-
-    const res = await fetch(BASE + `/beneficiaries/${id}/donate/${user.id}/${amount}`, { method: 'POST' });
-    alert(await res.text());
-    loadDonorBeneficiaryNeeds();
-}
-
-// ===== NGO STATS & FUND REPORT =====
-
-async function loadNgoStats() {
-    try {
-        const [reqRes, expRes] = await Promise.all([
-            fetch(BASE + '/requests'),
-            fetch(BASE + '/expenditures/ngo/' + user.id)
-        ]);
-        const requests     = await reqRes.json();
-        const expenditures = await expRes.json();
-
-        // Filter NGO's own requests
-        const myReqs = requests.filter(r => r.ngoId == user.id || true); // show all for now
-        const totalCollected = myReqs.reduce((s, r) => s + (r.collectedAmount || 0), 0);
-        const totalSpent     = expenditures.reduce((s, e) => s + (e.amount || 0), 0);
-        const balance        = totalCollected - totalSpent;
-        const active         = myReqs.filter(r => (r.status || '').toUpperCase() === 'ACTIVE').length;
-
-        const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-        setText('ngoTotalCollected', '\u20b9' + totalCollected.toFixed(2));
-        setText('ngoTotalSpent',     '\u20b9' + totalSpent.toFixed(2));
-        setText('ngoBalance',        '\u20b9' + balance.toFixed(2));
-        setText('ngoActiveReqs',     active);
-
-        // Fund Delivery Report
-        const reportEl = document.getElementById('ngoFundReport');
-        if (!reportEl) return;
-
-        if (myReqs.length === 0) {
-            reportEl.innerHTML = '<div class="empty-state"><i class="bi bi-inbox"></i><p>No donation requests yet.</p></div>';
-            return;
-        }
-
-        let html = '';
-        myReqs.forEach(r => {
-            const target    = r.targetAmount || 1;
-            const collected = r.collectedAmount || 0;
-            const pct       = Math.min(100, Math.round((collected / target) * 100));
-            const color     = pct >= 100 ? 'green' : pct >= 50 ? '' : 'orange';
-            html += `
-            <div style="margin-bottom:20px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                    <strong style="font-size:14px;">${r.title}</strong>
-                    <span class="badge ${badgeClass(r.status)}">${r.status}</span>
-                </div>
-                <div class="progress-wrap">
-                    <div class="progress-label">
-                        <span>\u20b9${collected.toLocaleString()} collected</span>
-                        <span>${pct}% of \u20b9${target.toLocaleString()}</span>
-                    </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill ${color}" style="width:${pct}%"></div>
-                    </div>
-                </div>
-            </div>`;
-        });
-        reportEl.innerHTML = html;
-
-    } catch(e) { console.error('loadNgoStats', e); }
-}
-
-// ===== DONOR STATS & FUND TRACKING =====
-
-async function loadDonorStats() {
-    try {
-        const [donRes, reqRes] = await Promise.all([
-            fetch(BASE + '/donations/donor/' + user.id),
-            fetch(BASE + '/requests')
-        ]);
-        const donations = await donRes.json();
-        const requests  = await reqRes.json();
-        const reqMap    = {};
-        requests.forEach(r => { reqMap[r.id] = r; });
-
-        const totalAmt   = donations.reduce((s, d) => s + (d.amount || 0), 0);
-        const reqIds     = [...new Set(donations.map(d => d.requestId))];
-        const avgImpact  = reqIds.length === 0 ? 0 : reqIds.reduce((s, id) => {
-            const r = reqMap[id];
-            if (!r || !r.targetAmount) return s;
-            return s + Math.min(100, ((r.collectedAmount || 0) / r.targetAmount) * 100);
-        }, 0) / reqIds.length;
-
-        const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-        setText('donorTotalAmt',  '\u20b9' + totalAmt.toFixed(2));
-        setText('donorDonCount',  donations.length);
-        setText('donorReqCount',  reqIds.length);
-        setText('donorImpact',    Math.round(avgImpact) + '%');
-
-        // Fund Tracking panel
-        const trackEl = document.getElementById('donorFundTrack');
-        if (!trackEl) return;
-
-        if (reqIds.length === 0) {
-            trackEl.innerHTML = '<div class="empty-state"><i class="bi bi-inbox"></i><p>No donations made yet.</p></div>';
-            return;
-        }
-
-        let html = '';
-        reqIds.forEach(id => {
-            const r = reqMap[id];
-            if (!r) return;
-            const myTotal   = donations.filter(d => d.requestId == id).reduce((s, d) => s + d.amount, 0);
-            const target    = r.targetAmount || 1;
-            const collected = r.collectedAmount || 0;
-            const pct       = Math.min(100, Math.round((collected / target) * 100));
-            const myPct     = Math.min(100, Math.round((myTotal / target) * 100));
-            const color     = pct >= 100 ? 'green' : pct >= 50 ? '' : 'orange';
-            html += `
-            <div style="margin-bottom:22px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                    <strong style="font-size:14px;">${r.title}</strong>
-                    <span class="badge badge-info">Your share: \u20b9${myTotal.toLocaleString()} (${myPct}%)</span>
-                </div>
-                <div class="progress-wrap">
-                    <div class="progress-label">
-                        <span>Overall: \u20b9${collected.toLocaleString()} collected</span>
-                        <span>${pct}% funded</span>
-                    </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill ${color}" style="width:${pct}%"></div>
-                    </div>
-                </div>
-                <div style="font-size:11px;color:#8a99b0;">Status: <strong>${r.status}</strong> &nbsp;|&nbsp; Target: \u20b9${target.toLocaleString()}</div>
-            </div>`;
-        });
-        trackEl.innerHTML = html;
-
-    } catch(e) { console.error('loadDonorStats', e); }
-}
-
-// ===== BENEFICIARY STATS & STATUS TRACKER =====
-
-async function loadBeneficiaryStats() {
-    try {
-        const res = await fetch(BASE + '/beneficiaries');
-        const apps = await res.json();
-        const myApps = apps.filter(a => a.userId == user.id);
-
-        const total = myApps.length;
-        const approved = myApps.filter(a => (a.status||'').toUpperCase() === 'APPROVED').length;
-        const pending = myApps.filter(a => (a.status||'').toUpperCase() === 'PENDING').length;
-        const rejected = myApps.filter(a => (a.status||'').toUpperCase() === 'REJECTED').length;
-
-        const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-        setText('benTotalApps', total);
-        setText('benApproved',  approved);
-        setText('benPending',   pending);
-        setText('benRejected',  rejected);
-
-        // Status Tracker
-        const trackerEl = document.getElementById('benStatusTracker');
-        if (!trackerEl) return;
-
-        if (myApps.length === 0) {
-            trackerEl.innerHTML = '<div class="empty-state"><i class="bi bi-inbox"></i><p>No applications yet. Submit one above.</p></div>';
-            return;
-        }
-
-        let html = '';
-        mine.forEach(a => {
-            const s = (a.status || 'PENDING').toUpperCase();
-            const submitted = true;
-            const underReview = true;
-            const approved_  = s === 'APPROVED';
-            const rejected_  = s === 'REJECTED';
-
-            const dot = (active, done, rej, label, icon) => `
-                <div class="step">
-                    <div class="step-dot ${rej ? 'rejected' : done ? 'done' : active ? 'active' : ''}">
-                        <i class="bi bi-${icon}"></i>
-                    </div>
-                    <div class="step-label">${label}</div>
-                </div>`;
-            const line = (done) => `<div class="step-line ${done ? 'done' : ''}"></div>`;
-
-            html += `
-            <div style="margin-bottom:28px;padding:16px;background:#f9fafc;border-radius:12px;border:1px solid #e8ecf4;">
-                <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:#0d1b2a;">
-                    #${a.id} — ${a.purpose} &nbsp;<span class="badge ${badgeClass(a.status)}">${a.status}</span>
-                </div>
-                <div class="status-steps">
-                    ${dot(true, true, false, 'Submitted', 'send-fill')}
-                    ${line(true)}
-                    ${dot(true, true, false, 'Under Review', 'eye-fill')}
-                    ${line(approved_ || rejected_)}
-                    ${dot(approved_ || rejected_, approved_, rejected_, approved_ ? 'Approved' : rejected_ ? 'Rejected' : 'Decision', approved_ ? 'check-circle-fill' : rejected_ ? 'x-circle-fill' : 'hourglass-split')}
-                </div>
-                <div style="font-size:12px;color:#8a99b0;margin-top:10px;">Required: \u20b9${a.requiredAmount || a.amount || 0} &nbsp;|&nbsp; ${a.description || ''}</div>
-            </div>`;
-        });
-        trackerEl.innerHTML = html;
-
-    } catch(e) { console.error('loadBeneficiaryStats', e); }
-}
-</script>
-
+  </script>
 </body>
 </html>

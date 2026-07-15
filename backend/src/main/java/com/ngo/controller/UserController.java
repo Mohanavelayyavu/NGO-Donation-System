@@ -1,100 +1,69 @@
 package com.ngo.controller;
 
-import java.util.ArrayList;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.ngo.model.User;
 import com.ngo.service.UserService;
-
-/*
- * User Controller
- */
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
-    private UserService service;
-
-    // Register
-
-    @PostMapping("/register")
-    public String register(@RequestBody User user) {
-
-        boolean status = service.registerUser(user);
-
-        if(status) {
-            return "Registration Successful";
-        }
-
-        return "Registration Failed";
-    }
-
-    // Login
+    private UserService userService;
 
     @PostMapping("/login")
-    public User login(@RequestBody User user) {
-
-        return service.loginUser(user);
-
+    public ResponseEntity<?> login(@RequestBody Map<String,String> body) {
+        String email = body.get("email");
+        String password = body.get("password");
+        String role = body.get("role");
+        User user = userService.loginUser(email, password, role);
+        if (user != null) return ResponseEntity.ok(user);
+        return ResponseEntity.status(401).body(Map.of("message","Invalid credentials"));
     }
 
-    // View Users
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody User user) {
+        boolean ok = userService.registerUser(user);
+        if (ok) return ResponseEntity.ok(Map.of("message","User registered successfully"));
+        return ResponseEntity.status(500).body(Map.of("message","Registration failed"));
+    }
 
     @GetMapping("/users")
-    public ArrayList<User> getUsers() {
-
-        return service.getAllUsers();
-
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
-
-    // User By Id
 
     @GetMapping("/users/{id}")
-    public User getUser(@PathVariable int id) {
-
-        return service.getUserById(id);
-
+    public ResponseEntity<?> getUserById(@PathVariable int id) {
+        User u = userService.getUserById(id);
+        if (u != null) return ResponseEntity.ok(u);
+        return ResponseEntity.status(404).body(Map.of("message","User not found"));
     }
 
-    // Update User
+    @GetMapping("/users/role/{role}")
+    public ResponseEntity<?> getUsersByRole(@PathVariable String role) {
+        return ResponseEntity.ok(userService.getUsersByRole(role));
+    }
+
+    @GetMapping("/users/count")
+    public ResponseEntity<?> getUserCount() {
+        return ResponseEntity.ok(Map.of("total", userService.getTotalCount()));
+    }
 
     @PutMapping("/users")
-    public String updateUser(@RequestBody User user) {
-
-        boolean status = service.updateUser(user);
-
-        if(status) {
-            return "User Updated";
-        }
-
-        return "Update Failed";
-
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
+        boolean ok = userService.updateUser(user);
+        if (ok) return ResponseEntity.ok(Map.of("message","User updated"));
+        return ResponseEntity.status(500).body(Map.of("message","Update failed"));
     }
-
-    // Delete User
 
     @DeleteMapping("/users/{id}")
-    public String deleteUser(@PathVariable int id) {
-
-        boolean status = service.deleteUser(id);
-
-        if(status) {
-            return "User Deleted";
-        }
-
-        return "Delete Failed";
-
+    public ResponseEntity<?> deleteUser(@PathVariable int id) {
+        boolean ok = userService.deleteUser(id);
+        if (ok) return ResponseEntity.ok(Map.of("message","User deleted"));
+        return ResponseEntity.status(500).body(Map.of("message","Delete failed"));
     }
-
 }

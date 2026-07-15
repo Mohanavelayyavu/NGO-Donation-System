@@ -1,68 +1,18 @@
 package com.ngo.service;
-
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.ngo.dao.MaterialDonationDAO;
 import com.ngo.model.MaterialDonation;
-
-/*
- * Material Donation Service
- */
+import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class MaterialDonationService {
-
-    private MaterialDonationDAO dao = new MaterialDonationDAO();
-
-    // Create material donation
-    public int create(MaterialDonation donation) {
-        try {
-            return dao.create(donation);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    // Get all material donations
-    public List<MaterialDonation> getAll() {
-        try {
-            return dao.getAll();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new java.util.ArrayList<>();
-        }
-    }
-
-    // Get by ID
-    public MaterialDonation getById(int id) {
-        try {
-            return dao.getById(id);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    // Get by donor
-    public List<MaterialDonation> getByDonor(int donorId) {
-        try {
-            return dao.getByDonor(donorId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new java.util.ArrayList<>();
-        }
-    }
-
-    // Delete material donation
-    public boolean delete(int id) {
-        try {
-            return dao.delete(id);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+    private final MaterialDonationDAO dao = new MaterialDonationDAO();
+    public boolean pledge(MaterialDonation md) { return dao.pledge(md); }
+    public List<MaterialDonation> getAll() { return dao.getAll(); }
+    public List<MaterialDonation> getByDonor(int donorId) { return dao.getByDonor(donorId); }
+    public List<MaterialDonation> getByRequest(int requestId) { return dao.getByRequest(requestId); }
+    public MaterialDonation getById(int id) { return dao.getById(id); }
+    public boolean updateLogistics(int id, String courier, String tracking, String expectedDate) { return dao.updateLogistics(id, courier, tracking, expectedDate); }
+    public boolean markDelivered(int id, int damagedQty) { return dao.markDelivered(id, damagedQty); }
+    public int getCount() { return dao.getCount(); }
 }

@@ -928,7 +928,7 @@ async function loadHomeStats() {
         // Fetch all data in parallel
         const [usersRes, requestsRes, benefRes, totalRes] = await Promise.all([
             fetch(BASE + "/users"),
-            fetch(BASE + "/requests"),
+            fetch(BASE + "/fund-requests"),
             fetch(BASE + "/beneficiaries"),
             fetch(BASE + "/donations/total")
         ]);
@@ -952,9 +952,10 @@ async function loadHomeStats() {
 
         // Update hero stats
         const el = id => document.getElementById(id);
+        const actualTotal = totalAmount && typeof totalAmount === 'object' ? (totalAmount.total || 0) : (parseFloat(totalAmount) || 0);
         if (el("ngoCount"))         el("ngoCount").textContent         = ngoCount   || "0";
         if (el("donorCount"))       el("donorCount").textContent       = donorCount || "0";
-        if (el("donationAmount"))   el("donationAmount").textContent   = formatAmount(totalAmount || 0);
+        if (el("donationAmount"))   el("donationAmount").textContent   = formatAmount(actualTotal);
         if (el("beneficiaryCount")) el("beneficiaryCount").textContent = benefCount || "0";
 
     } catch (err) {

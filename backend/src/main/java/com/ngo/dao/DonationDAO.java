@@ -1,322 +1,108 @@
 package com.ngo.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-
 import com.ngo.model.Donation;
 import com.ngo.util.DBUtil;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
+/*
+ * DonationDAO - All database operations for Donation
+ */
 public class DonationDAO {
 
-    // Add Donation
-    public boolean donate(Donation donation) {
-
-        boolean status = false;
-        String sql = "INSERT INTO donations(donor_id,request_id,amount,donation_date) VALUES(?,?,?,?)";
-        System.out.println("[CRUD - INSERT] Table: donations | SQL: " + sql + " | Params: donor_id=" + donation.getDonorId() + ", request_id=" + donation.getRequestId() + ", amount=" + donation.getAmount());
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ps.setInt(1, donation.getDonorId());
-            ps.setInt(2, donation.getRequestId());
-            ps.setDouble(3, donation.getAmount());
-            if (donation.getDonationDate() == null || donation.getDonationDate().trim().isEmpty()) {
-                ps.setDate(4, new java.sql.Date(System.currentTimeMillis()));
-            } else {
-                ps.setString(4, donation.getDonationDate());
-            }
-
-            int rows = ps.executeUpdate();
-
-            if (rows > 0) {
-                status = true;
-            }
-
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return status;
-
+    public boolean create(Donation d) {
+        String sql = "INSERT INTO donations (donor_id,request_id,amount,payment_status,donation_status,donation_date) VALUES (?,?,?,?,?,?)";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, d.getDonorId()); ps.setInt(2, d.getRequestId());
+            ps.setDouble(3, d.getAmount());
+            ps.setString(4, d.getPaymentStatus() != null ? d.getPaymentStatus() : "SUCCESS");
+            ps.setString(5, d.getDonationStatus() != null ? d.getDonationStatus() : "COMPLETED");
+            ps.setObject(6, d.getDonationDate());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
     }
 
-    // Get All Donations
-    public ArrayList<Donation> getAllDonations() {
-
-        ArrayList<Donation> list = new ArrayList<>();
-        String sql = "SELECT * FROM donations ORDER BY id DESC";
-        System.out.println("[CRUD - SELECT] Table: donations | SQL: " + sql);
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
+    public List<Donation> getAll() {
+        List<Donation> list = new ArrayList<>();
+        String sql = "SELECT * FROM donations ORDER BY donation_id DESC";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                Donation donation = new Donation();
-
-                donation.setId(rs.getInt("id"));
-                donation.setDonorId(rs.getInt("donor_id"));
-                donation.setRequestId(rs.getInt("request_id"));
-                donation.setAmount(rs.getDouble("amount"));
-                donation.setDonationDate(rs.getString("donation_date"));
-
-                list.add(donation);
-
-            }
-
-            rs.close();
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+            while (rs.next()) list.add(mapDonation(rs));
+        } catch (Exception e) { e.printStackTrace(); }
         return list;
-
     }
 
-    // Get Donation By ID
-    public Donation getDonationById(int id) {
-
-        Donation donation = null;
-        String sql = "SELECT * FROM donations WHERE id=?";
-        System.out.println("[CRUD - SELECT] Table: donations | SQL: " + sql + " | Params: id=" + id);
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ps.setInt(1, id);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-
-                donation = new Donation();
-
-                donation.setId(rs.getInt("id"));
-                donation.setDonorId(rs.getInt("donor_id"));
-                donation.setRequestId(rs.getInt("request_id"));
-                donation.setAmount(rs.getDouble("amount"));
-                donation.setDonationDate(rs.getString("donation_date"));
-
-            }
-
-            rs.close();
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return donation;
-
-    }
-
-    // Get Donations By Donor
-    public ArrayList<Donation> getDonationsByDonor(int donorId) {
-
-        ArrayList<Donation> list = new ArrayList<>();
-        String sql = "SELECT * FROM donations WHERE donor_id=? ORDER BY donation_date DESC";
-        System.out.println("[CRUD - SELECT] Table: donations | SQL: " + sql + " | Params: donor_id=" + donorId);
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
+    public List<Donation> getByDonor(int donorId) {
+        List<Donation> list = new ArrayList<>();
+        String sql = "SELECT * FROM donations WHERE donor_id=? ORDER BY donation_id DESC";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, donorId);
-
             ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                Donation donation = new Donation();
-
-                donation.setId(rs.getInt("id"));
-                donation.setDonorId(rs.getInt("donor_id"));
-                donation.setRequestId(rs.getInt("request_id"));
-                donation.setAmount(rs.getDouble("amount"));
-                donation.setDonationDate(rs.getString("donation_date"));
-
-                list.add(donation);
-
-            }
-
-            rs.close();
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+            while (rs.next()) list.add(mapDonation(rs));
+        } catch (Exception e) { e.printStackTrace(); }
         return list;
-
     }
 
-    // Get Donations By Request
-    public ArrayList<Donation> getDonationsByRequest(int requestId) {
-
-        ArrayList<Donation> list = new ArrayList<>();
-        String sql = "SELECT * FROM donations WHERE request_id=? ORDER BY donation_date DESC";
-        System.out.println("[CRUD - SELECT] Table: donations | SQL: " + sql + " | Params: request_id=" + requestId);
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
+    public List<Donation> getByRequest(int requestId) {
+        List<Donation> list = new ArrayList<>();
+        String sql = "SELECT * FROM donations WHERE request_id=? ORDER BY donation_id DESC";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, requestId);
-
             ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                Donation donation = new Donation();
-
-                donation.setId(rs.getInt("id"));
-                donation.setDonorId(rs.getInt("donor_id"));
-                donation.setRequestId(rs.getInt("request_id"));
-                donation.setAmount(rs.getDouble("amount"));
-                donation.setDonationDate(rs.getString("donation_date"));
-
-                list.add(donation);
-
-            }
-
-            rs.close();
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+            while (rs.next()) list.add(mapDonation(rs));
+        } catch (Exception e) { e.printStackTrace(); }
         return list;
-
     }
 
-    // Get Total Donation Amount
-    public double getTotalDonationAmount() {
-
-        double total = 0;
-        String sql = "SELECT SUM(amount) AS total FROM donations";
-        System.out.println("[CRUD - SELECT] Table: donations | SQL: " + sql);
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-
-                total = rs.getDouble("total");
-
-            }
-
-            rs.close();
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return total;
-
-    }
-
-    // Get Total Donation For One Request
-    public double getDonationAmountByRequest(int requestId) {
-
-        double total = 0;
-        String sql = "SELECT SUM(amount) AS total FROM donations WHERE request_id=?";
-        System.out.println("[CRUD - SELECT] Table: donations | SQL: " + sql + " | Params: request_id=" + requestId);
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ps.setInt(1, requestId);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-
-                total = rs.getDouble("total");
-
-            }
-
-            rs.close();
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return total;
-
-    }
-
-    // Delete Donation
-    public boolean deleteDonation(int id) {
-
-        boolean status = false;
-        String sql = "DELETE FROM donations WHERE id=?";
-        System.out.println("[CRUD - DELETE] Table: donations | SQL: " + sql + " | Params: id=" + id);
-
-        try {
-
-            Connection con = DBUtil.getConnection();
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
+    public Donation getById(int id) {
+        String sql = "SELECT * FROM donations WHERE donation_id=?";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
-
-            int rows = ps.executeUpdate();
-
-            if (rows > 0) {
-
-                status = true;
-
-            }
-
-            ps.close();
-            con.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return status;
-
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return mapDonation(rs);
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
     }
 
+    public double getTotalAmount() {
+        String sql = "SELECT COALESCE(SUM(amount),0) FROM donations";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getDouble(1);
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0.0;
+    }
+
+    public int getCount() {
+        String sql = "SELECT COUNT(*) FROM donations";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
+    }
+
+    public double getTotalAmountByDonor(int donorId) {
+        String sql = "SELECT COALESCE(SUM(amount),0) FROM donations WHERE donor_id=?";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, donorId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getDouble(1);
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0.0;
+    }
+
+    private Donation mapDonation(ResultSet rs) throws SQLException {
+        Donation d = new Donation();
+        d.setDonationId(rs.getInt("donation_id"));
+        d.setDonorId(rs.getInt("donor_id"));
+        d.setRequestId(rs.getInt("request_id"));
+        d.setAmount(rs.getDouble("amount"));
+        d.setPaymentStatus(rs.getString("payment_status"));
+        d.setDonationStatus(rs.getString("donation_status"));
+        Date dt = rs.getDate("donation_date");
+        if (dt != null) d.setDonationDate(dt.toLocalDate());
+        return d;
+    }
 }

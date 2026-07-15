@@ -1,16 +1,12 @@
 package com.ngo.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.ngo.model.MaterialDonation;
 import com.ngo.service.MaterialDonationService;
-
-/*
- * Material Donation Controller
- */
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -19,41 +15,38 @@ public class MaterialDonationController {
     @Autowired
     private MaterialDonationService service;
 
-    // Create material donation
     @PostMapping("/material-donations")
-    public String create(@RequestBody MaterialDonation donation) {
-        int id = service.create(donation);
-        if (id > 0) {
-            return "Material donation recorded with ID: " + id;
-        }
-        return "Failed to record material donation";
+    public ResponseEntity<?> pledge(@RequestBody MaterialDonation md) {
+        if (md.getDonationDate() == null) md.setDonationDate(LocalDate.now());
+        boolean ok = service.pledge(md);
+        if (ok) return ResponseEntity.ok(Map.of("message","Material donation pledged"));
+        return ResponseEntity.status(500).body(Map.of("message","Pledge failed"));
     }
 
-    // Get all material donations
     @GetMapping("/material-donations")
-    public List<MaterialDonation> getAll() {
-        return service.getAll();
-    }
+    public ResponseEntity<?> getAll() { return ResponseEntity.ok(service.getAll()); }
 
-    // Get by ID
-    @GetMapping("/material-donations/{id}")
-    public MaterialDonation getById(@PathVariable int id) {
-        return service.getById(id);
-    }
-
-    // Get by donor
     @GetMapping("/material-donations/donor/{donorId}")
-    public List<MaterialDonation> getByDonor(@PathVariable int donorId) {
-        return service.getByDonor(donorId);
+    public ResponseEntity<?> getByDonor(@PathVariable int donorId) { return ResponseEntity.ok(service.getByDonor(donorId)); }
+
+    @GetMapping("/material-donations/request/{requestId}")
+    public ResponseEntity<?> getByRequest(@PathVariable int requestId) { return ResponseEntity.ok(service.getByRequest(requestId)); }
+
+    @PutMapping("/material-donations/{id}/logistics")
+    public ResponseEntity<?> updateLogistics(@PathVariable int id, @RequestBody Map<String,String> body) {
+        boolean ok = service.updateLogistics(id, body.get("courierName"), body.get("trackingNumber"), body.get("expectedDeliveryDate"));
+        if (ok) return ResponseEntity.ok(Map.of("message","Logistics updated"));
+        return ResponseEntity.status(500).body(Map.of("message","Update failed"));
     }
 
-    // Delete material donation
-    @DeleteMapping("/material-donations/{id}")
-    public String delete(@PathVariable int id) {
-        boolean status = service.delete(id);
-        if (status) {
-            return "Material donation deleted";
-        }
-        return "Delete failed";
+    @PutMapping("/material-donations/{id}/delivered")
+    public ResponseEntity<?> markDelivered(@PathVariable int id, @RequestBody Map<String,String> body) {
+        int damaged = body.containsKey("damagedQuantity") ? Integer.parseInt(body.get("damagedQuantity")) : 0;
+        boolean ok = service.markDelivered(id, damaged);
+        if (ok) return ResponseEntity.ok(Map.of("message","Marked as delivered"));
+        return ResponseEntity.status(500).body(Map.of("message","Update failed"));
     }
+
+    @GetMapping("/material-donations/count")
+    public ResponseEntity<?> getCount() { return ResponseEntity.ok(Map.of("count", service.getCount())); }
 }

@@ -1,55 +1,42 @@
 package com.ngo.model;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
-/*
- * Material Request Model
- * NGOs raise requests for specific physical items (e.g. blankets, food bags)
- */
 public class MaterialRequest {
-
     private int requestId;
     private int ngoId;
-    private String ngoName;         // joined from users
-    private int beneficiaryId;
-    private String beneficiaryName; // joined from users
     private String itemName;
+    private String category;
     private String description;
     private int quantityNeeded;
-    private int quantityReceived;   // updated as donors fulfill
-    private String status;          // OPEN, FULFILLED, CLOSED
-    private Date createdDate;
+    private int quantityReceived;
+    private String deliveryLocation;
+    private LocalDate deadline;
+    private String status;
+    private LocalDate createdDate;
 
-    public int getRequestId()           { return requestId; }
-    public void setRequestId(int v)     { this.requestId = v; }
+    public MaterialRequest() {}
 
-    public int getNgoId()               { return ngoId; }
-    public void setNgoId(int v)         { this.ngoId = v; }
-
-    public String getNgoName()          { return ngoName; }
-    public void setNgoName(String v)    { this.ngoName = v; }
-
-    public int getBeneficiaryId()           { return beneficiaryId; }
-    public void setBeneficiaryId(int v)     { this.beneficiaryId = v; }
-
-    public String getBeneficiaryName()      { return beneficiaryName; }
-    public void setBeneficiaryName(String v){ this.beneficiaryName = v; }
-
-    public String getItemName()         { return itemName; }
-    public void setItemName(String v)   { this.itemName = v; }
-
-    public String getDescription()      { return description; }
-    public void setDescription(String v){ this.description = v; }
-
-    public int getQuantityNeeded()      { return quantityNeeded; }
-    public void setQuantityNeeded(int v){ this.quantityNeeded = v; }
-
-    public int getQuantityReceived()    { return quantityReceived; }
-    public void setQuantityReceived(int v){ this.quantityReceived = v; }
-
-    public String getStatus()           { return status; }
-    public void setStatus(String v)     { this.status = v; }
-
-    public Date getCreatedDate()        { return createdDate; }
-    public void setCreatedDate(Date v)  { this.createdDate = v; }
+    public int getRequestId() { return requestId; }
+    public void setRequestId(int requestId) { this.requestId = requestId; }
+    public int getNgoId() { return ngoId; }
+    public void setNgoId(int ngoId) { this.ngoId = ngoId; }
+    public String getItemName() { return itemName; }
+    public void setItemName(String itemName) { this.itemName = itemName; }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public int getQuantityNeeded() { return quantityNeeded; }
+    public void setQuantityNeeded(int quantityNeeded) { this.quantityNeeded = quantityNeeded; }
+    public int getQuantityReceived() { return quantityReceived; }
+    public void setQuantityReceived(int quantityReceived) { this.quantityReceived = quantityReceived; }
+    public String getDeliveryLocation() { return deliveryLocation; }
+    public void setDeliveryLocation(String deliveryLocation) { this.deliveryLocation = deliveryLocation; }
+    public LocalDate getDeadline() { return deadline; }
+    public void setDeadline(LocalDate deadline) { this.deadline = deadline; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+    public LocalDate getCreatedDate() { return createdDate; }
+    public void setCreatedDate(LocalDate createdDate) { this.createdDate = createdDate; }
 }

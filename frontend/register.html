@@ -1,373 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register | Hope Foundation NGO</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-        }
-
-        /* ---- LEFT PANEL ---- */
-        .left-panel {
-            flex: 1;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 40px;
-            position: relative;
-        }
-
-        .left-panel .brand {
-            position: absolute;
-            top: 32px;
-            left: 40px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 18px;
-            font-weight: 700;
-            color: #1565C0;
-            text-decoration: none;
-        }
-
-        .left-panel .brand i { font-size: 22px; color: #1565C0; }
-
-        .illustration-box {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-            border-radius: 24px;
-            padding: 40px;
-            text-align: center;
-            max-width: 340px;
-            width: 100%;
-        }
-
-        .illustration-icon {
-            font-size: 100px;
-            color: #1565C0;
-            line-height: 1;
-            display: block;
-            margin-bottom: 20px;
-        }
-
-        .illustration-box h3 {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1565C0;
-            margin-bottom: 8px;
-        }
-
-        .illustration-box p {
-            font-size: 14px;
-            color: #5c7a9f;
-            line-height: 1.6;
-        }
-
-        .features-list {
-            margin-top: 24px;
-            text-align: left;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 0;
-            font-size: 13px;
-            font-weight: 500;
-            color: #1a3d6e;
-        }
-
-        .feature-item i {
-            color: #1565C0;
-            font-size: 16px;
-        }
-
-        /* ---- RIGHT PANEL ---- */
-        .right-panel {
-            width: 500px;
-            background: #1565C0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 48px 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .right-panel::before {
-            content: '';
-            position: absolute;
-            width: 320px;
-            height: 320px;
-            border: 2px solid rgba(255,255,255,0.12);
-            border-radius: 50%;
-            bottom: -120px;
-            right: -100px;
-        }
-
-        .right-panel::after {
-            content: '';
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            border: 2px solid rgba(255,255,255,0.08);
-            border-radius: 50%;
-            bottom: -60px;
-            right: -60px;
-        }
-
-        .form-card {
-            background: #fff;
-            border-radius: 20px;
-            padding: 36px 32px;
-            width: 100%;
-            max-width: 380px;
-            box-shadow: 0 24px 60px rgba(0,0,0,0.18);
-            position: relative;
-            z-index: 2;
-        }
-
-        .form-card h2 {
-            font-size: 24px;
-            font-weight: 800;
-            color: #0d1b2a;
-            margin-bottom: 4px;
-        }
-
-        .form-card .subtitle {
-            font-size: 13px;
-            color: #8a99b0;
-            margin-bottom: 22px;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 13px;
-        }
-
-        .input-group i {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #aab4c4;
-            font-size: 15px;
-        }
-
-        .input-group input,
-        .input-group select {
-            width: 100%;
-            padding: 12px 14px 12px 42px;
-            border: 1.5px solid #e8ecf4;
-            border-radius: 10px;
-            font-size: 13.5px;
-            font-family: 'Inter', sans-serif;
-            color: #0d1b2a;
-            background: #f9fafc;
-            outline: none;
-            transition: all 0.25s;
-            appearance: none;
-            -webkit-appearance: none;
-        }
-
-        .input-group input:focus,
-        .input-group select:focus {
-            border-color: #1565C0;
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(21,101,192,0.1);
-        }
-
-        .input-group input::placeholder { color: #b0bec5; }
-
-        .btn-register {
-            width: 100%;
-            padding: 13px;
-            background: #1565C0;
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 15px;
-            font-weight: 700;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            margin-top: 6px;
-            transition: all 0.25s;
-            letter-spacing: 0.3px;
-        }
-
-        .btn-register:hover {
-            background: #0d47a1;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(21,101,192,0.35);
-        }
-
-        .btn-register:active { transform: translateY(0); }
-
-        .form-footer {
-            text-align: center;
-            margin-top: 16px;
-            font-size: 13px;
-            color: #8a99b0;
-        }
-
-        .form-footer a {
-            color: #1565C0;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .form-footer a:hover { text-decoration: underline; }
-
-        @media (max-width: 768px) {
-            body { flex-direction: column; height: auto; min-height: 100vh; }
-            .left-panel { display: none; }
-            .right-panel { width: 100%; min-height: 100vh; padding: 40px 24px; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Hope NGO Donation System</title>
+  <meta name="description" content="Create your account to join the Hope NGO Donation Tracking System as a donor, NGO, or beneficiary.">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/login.css">
+  <style>
+    .register-right { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 3rem 2.5rem; background: white; overflow-y: auto; }
+    .register-form-container { width: 100%; max-width: 480px; padding: 1rem 0; }
+    .step-indicator { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+    .step { flex: 1; height: 4px; border-radius: 100px; background: #e5e7eb; transition: background 0.3s; }
+    .step.active { background: #4F46E5; }
+    .step.done { background: #10B981; }
+    .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; margin-bottom: 1.25rem; }
+    .role-card { padding: 1.25rem; border: 2px solid #e5e7eb; border-radius: 16px; cursor: pointer; transition: all 0.2s; text-align: center; }
+    .role-card:hover { border-color: #4F46E5; background: #f5f3ff; }
+    .role-card.selected { border-color: #4F46E5; background: #ede9fe; }
+    .role-card i { font-size: 1.75rem; display: block; margin-bottom: 0.5rem; }
+    .role-card-name { font-weight: 700; font-size: 0.9rem; color: #374151; }
+    .role-card-desc { font-size: 0.75rem; color: #9ca3af; margin-top: 0.25rem; }
+    .role-card.selected .role-card-name { color: #4F46E5; }
+  </style>
 </head>
 <body>
-
+  <div class="login-layout">
     <!-- LEFT PANEL -->
-    <div class="left-panel">
-        <a href="index.html" class="brand">
-            <i class="bi bi-heart-pulse-fill"></i>
-            Hope Foundation
-        </a>
-
-        <div class="illustration-box">
-            <i class="bi bi-person-plus-fill illustration-icon"></i>
-            <h3>Join Our Mission</h3>
-            <p>Become part of a community driving real change across India.</p>
-
-            <div class="features-list">
-                <div class="feature-item"><i class="bi bi-check-circle-fill"></i> Connect with <span id="statNGO">—</span> registered NGOs</div>
-                <div class="feature-item"><i class="bi bi-check-circle-fill"></i> Track your donations transparently</div>
-                <div class="feature-item"><i class="bi bi-check-circle-fill"></i> Apply for financial assistance</div>
-                <div class="feature-item"><i class="bi bi-check-circle-fill"></i> Support education & healthcare</div>
+    <div class="login-left">
+      <div style="width:100%;max-width:420px;z-index:1;position:relative">
+        <div style="background:rgba(255,255,255,0.06);border-radius:20px;padding:2rem;border:1px solid rgba(255,255,255,0.12);margin-bottom:2rem">
+          <h3 style="color:white;font-size:1.4rem;font-weight:800;margin-bottom:1.5rem">Why Join Us?</h3>
+          <div style="display:flex;flex-direction:column;gap:1.25rem">
+            <div style="display:flex;align-items:flex-start;gap:1rem">
+              <div style="width:40px;height:40px;border-radius:12px;background:rgba(16,185,129,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="bi bi-graph-up-arrow" style="color:#34d399;font-size:1.1rem"></i></div>
+              <div><div style="font-weight:700;color:white;font-size:0.9rem">Full Transparency</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.55);margin-top:0.2rem">Track every rupee from donation to utilization</div></div>
             </div>
+            <div style="display:flex;align-items:flex-start;gap:1rem">
+              <div style="width:40px;height:40px;border-radius:12px;background:rgba(165,180,252,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="bi bi-lightning-charge-fill" style="color:#a5b4fc;font-size:1.1rem"></i></div>
+              <div><div style="font-weight:700;color:white;font-size:0.9rem">Real-time Updates</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.55);margin-top:0.2rem">Get live updates on your contributions</div></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:1rem">
+              <div style="width:40px;height:40px;border-radius:12px;background:rgba(251,191,36,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="bi bi-shield-check-fill" style="color:#fbbf24;font-size:1.1rem"></i></div>
+              <div><div style="font-weight:700;color:white;font-size:0.9rem">Verified NGOs</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.55);margin-top:0.2rem">All NGOs are admin-verified for trust</div></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:1rem">
+              <div style="width:40px;height:40px;border-radius:12px;background:rgba(244,63,94,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="bi bi-heart-fill" style="color:#f87171;font-size:1.1rem"></i></div>
+              <div><div style="font-weight:700;color:white;font-size:0.9rem">Community Impact</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.55);margin-top:0.2rem">Your donations reach people in need faster</div></div>
+            </div>
+          </div>
         </div>
+
+        <div style="text-align:center">
+          <div style="font-size:1.5rem;font-weight:800;color:white;margin-bottom:0.5rem">5,000+ Lives Impacted</div>
+          <div style="font-size:0.875rem;color:rgba(255,255,255,0.5)">And counting. Join us today.</div>
+        </div>
+      </div>
     </div>
 
     <!-- RIGHT PANEL -->
-    <div class="right-panel">
-        <div class="form-card">
-            <h2>Create Account</h2>
-            <p class="subtitle">Sign up to get started with Hope Foundation</p>
-
-            <div class="input-group">
-                <i class="bi bi-person-fill"></i>
-                <input type="text" id="name" placeholder="Full Name" autocomplete="name">
-            </div>
-
-            <div class="input-group">
-                <i class="bi bi-envelope-fill"></i>
-                <input type="email" id="email" placeholder="Email Address" autocomplete="email">
-            </div>
-
-            <div class="input-group">
-                <i class="bi bi-lock-fill"></i>
-                <input type="password" id="password" placeholder="Password">
-            </div>
-
-            <div class="input-group">
-                <i class="bi bi-lock-fill"></i>
-                <input type="password" id="confirmPassword" placeholder="Confirm Password">
-            </div>
-
-            <div class="input-group">
-                <i class="bi bi-person-badge-fill"></i>
-                <select id="role">
-                    <option value="">Register As</option>
-                    <option value="DONOR">Donor</option>
-                    <option value="NGO">NGO</option>
-                    <option value="BENEFICIARY">Beneficiary</option>
-                </select>
-            </div>
-
-            <button class="btn-register" id="registerBtn" onclick="registerUser()">
-                Create Account
-            </button>
-
-            <div class="form-footer">
-                Already have an account? <a href="login.html">Sign In</a>
-            </div>
-
-            <div class="form-footer" style="margin-top: 6px;">
-                <a href="index.html">← Back to Home</a>
-            </div>
+    <div class="register-right">
+      <div class="register-form-container">
+        <div class="login-logo">
+          <i class="bi bi-droplet-fill"></i>
+          <div>
+            <div class="login-logo-text">Hope NGO</div>
+            <div class="login-logo-sub">Create Your Account</div>
+          </div>
         </div>
+
+        <h1 class="login-title" style="font-size:1.6rem">Create Account</h1>
+        <p class="login-subtitle">Join our community and make a difference</p>
+
+        <div class="step-indicator">
+          <div class="step active" id="step1-ind"></div>
+          <div class="step" id="step2-ind"></div>
+        </div>
+
+        <div class="error-msg" id="errorMsg">
+          <i class="bi bi-exclamation-circle-fill"></i>
+          <span id="errorText">Please fix the errors above.</span>
+        </div>
+        <div class="error-msg" id="successMsg" style="background:#d1fae5;color:#065f46;border:1px solid #6ee7b7">
+          <i class="bi bi-check-circle-fill"></i>
+          <span id="successText">Account created successfully!</span>
+        </div>
+
+        <form id="registerForm" onsubmit="handleRegister(event)">
+          <!-- STEP 1: Role Selection -->
+          <div id="step1">
+            <div class="form-group">
+              <label>Choose your role</label>
+              <div class="role-grid">
+                <div class="role-card" onclick="selectRole('NGO', this)">
+                  <i class="bi bi-building" style="color:#10B981"></i>
+                  <div class="role-card-name">NGO</div>
+                  <div class="role-card-desc">Run campaigns & request aid</div>
+                </div>
+                <div class="role-card" onclick="selectRole('DONOR', this)">
+                  <i class="bi bi-heart-fill" style="color:#4F46E5"></i>
+                  <div class="role-card-name">Donor</div>
+                  <div class="role-card-desc">Fund & support causes</div>
+                </div>
+                <div class="role-card" onclick="selectRole('BENEFICIARY', this)">
+                  <i class="bi bi-person-fill" style="color:#F59E0B"></i>
+                  <div class="role-card-name">Beneficiary</div>
+                  <div class="role-card-desc">Receive assistance from NGOs</div>
+                </div>
+                <div class="role-card" onclick="selectRole('ADMIN', this)">
+                  <i class="bi bi-shield-fill" style="color:#EF4444"></i>
+                  <div class="role-card-name">Admin</div>
+                  <div class="role-card-desc">Manage the platform</div>
+                </div>
+              </div>
+              <input type="hidden" id="roleInput" name="role" required>
+            </div>
+            <button type="button" class="btn-login" onclick="goToStep2()" id="nextBtn" disabled>
+              Continue <i class="bi bi-arrow-right"></i>
+            </button>
+          </div>
+
+          <!-- STEP 2: Details -->
+          <div id="step2" style="display:none">
+            <div class="form-group">
+              <label for="regName">Full Name</label>
+              <div class="input-icon-wrap">
+                <i class="bi bi-person-fill"></i>
+                <input type="text" id="regName" name="name" class="form-control" placeholder="Your full name" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="regEmail">Email Address</label>
+              <div class="input-icon-wrap">
+                <i class="bi bi-envelope-fill"></i>
+                <input type="email" id="regEmail" name="email" class="form-control" placeholder="you@example.com" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="regPassword">Password</label>
+              <div class="input-icon-wrap">
+                <i class="bi bi-lock-fill"></i>
+                <input type="password" id="regPassword" name="password" class="form-control" placeholder="Min 6 characters" required minlength="6">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="regConfirmPassword">Confirm Password</label>
+              <div class="input-icon-wrap">
+                <i class="bi bi-lock-fill"></i>
+                <input type="password" id="regConfirmPassword" class="form-control" placeholder="Re-enter your password" required>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:0.75rem;margin-bottom:1.25rem">
+              <button type="button" class="btn-login" onclick="goToStep1()" style="background:#f3f4f6;color:#374151;box-shadow:none;flex:1">
+                <i class="bi bi-arrow-left"></i> Back
+              </button>
+              <button type="submit" class="btn-login" id="registerBtn" style="flex:2">
+                <span id="registerBtnText">Create Account</span>
+                <i class="bi bi-check2-circle"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <div class="login-footer">
+          Already have an account? <a href="login.html">Sign in</a>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <script>
-    // Load real NGO count for left panel
-    async function loadStats() {
-        try {
-            const res = await fetch("http://localhost:8081/users");
-            const users = await res.json();
-            const ngoCount = users.filter(u => u.role === "NGO").length;
-            document.getElementById("statNGO").textContent = ngoCount || "0";
-        } catch (e) {
-            document.getElementById("statNGO").textContent = "—";
-        }
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    if (AUTH.isLoggedIn()) window.location.href = 'dashboard.html';
+
+    let selectedRole = '';
+
+    function selectRole(role, card) {
+      selectedRole = role;
+      document.getElementById('roleInput').value = role;
+      document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      document.getElementById('nextBtn').disabled = false;
     }
-    loadStats();
 
-    async function registerUser() {
-        const btn           = document.getElementById("registerBtn");
-        const name          = document.getElementById("name").value.trim();
-        const email         = document.getElementById("email").value.trim();
-        const password      = document.getElementById("password").value;
-        const confirmPassword = document.getElementById("confirmPassword").value;
-        const role          = document.getElementById("role").value;
-
-        if (!name || !email || !password || !confirmPassword || !role) {
-            alert("Please fill all the fields.");
-            return;
-        }
-        if (password !== confirmPassword) {
-            alert("Passwords do not match.");
-            return;
-        }
-        if (password.length < 6) {
-            alert("Password must be at least 6 characters.");
-            return;
-        }
-
-        btn.disabled = true;
-        btn.textContent = "Creating account…";
-
-        try {
-            const response = await fetch("http://localhost:8081/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password, role })
-            });
-
-            const result = await response.text();
-            alert(result);
-
-            if (response.ok && result.toLowerCase().includes("success")) {
-                window.location.href = "login.html";
-            }
-        } catch (error) {
-            alert("Unable to connect to the server. Please make sure the backend is running.");
-        } finally {
-            btn.disabled = false;
-            btn.textContent = "Create Account";
-        }
+    function goToStep2() {
+      if (!selectedRole) { alert('Please select a role'); return; }
+      document.getElementById('step1').style.display = 'none';
+      document.getElementById('step2').style.display = 'block';
+      document.getElementById('step1-ind').classList.add('done');
+      document.getElementById('step1-ind').classList.remove('active');
+      document.getElementById('step2-ind').classList.add('active');
     }
-    </script>
 
+    function goToStep1() {
+      document.getElementById('step2').style.display = 'none';
+      document.getElementById('step1').style.display = 'block';
+      document.getElementById('step1-ind').classList.remove('done');
+      document.getElementById('step1-ind').classList.add('active');
+      document.getElementById('step2-ind').classList.remove('active');
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const confirmPassword = document.getElementById('regConfirmPassword').value;
+      const role = document.getElementById('roleInput').value;
+      const btn = document.getElementById('registerBtn');
+      const btnText = document.getElementById('registerBtnText');
+      const errDiv = document.getElementById('errorMsg');
+      const errText = document.getElementById('errorText');
+      const successDiv = document.getElementById('successMsg');
+
+      errDiv.classList.remove('show');
+      successDiv.classList.remove('show');
+
+      // Validate
+      if (password !== confirmPassword) {
+        errText.textContent = 'Passwords do not match.';
+        errDiv.classList.add('show');
+        return;
+      }
+      if (password.length < 6) {
+        errText.textContent = 'Password must be at least 6 characters.';
+        errDiv.classList.add('show');
+        return;
+      }
+      if (!role) {
+        errText.textContent = 'Please go back and select a role.';
+        errDiv.classList.add('show');
+        return;
+      }
+
+      btn.disabled = true;
+      btnText.textContent = 'Creating account...';
+
+      try {
+        await API.users.register({ name, email, password, role });
+        document.getElementById('successText').textContent = `Account created! Redirecting to login...`;
+        successDiv.classList.add('show');
+        document.getElementById('registerForm').reset();
+        setTimeout(() => window.location.href = 'login.html', 2000);
+      } catch (err) {
+        errText.textContent = err.message || 'Registration failed. Please try again.';
+        errDiv.classList.add('show');
+        btn.disabled = false;
+        btnText.textContent = 'Create Account';
+      }
+    }
+  </script>
 </body>
 </html>

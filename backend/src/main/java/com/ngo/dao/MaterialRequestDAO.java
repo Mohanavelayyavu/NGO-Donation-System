@@ -2,164 +2,109 @@ package com.ngo.dao;
 
 import com.ngo.model.MaterialRequest;
 import com.ngo.util.DBUtil;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /*
- * MaterialRequestDAO – CRUD for material_requests table
+ * MaterialRequestDAO - All database operations for MaterialRequest
  */
 public class MaterialRequestDAO {
 
-    public int create(MaterialRequest req) throws Exception {
-        String sql = "INSERT INTO material_requests (ngo_id, beneficiary_id, item_name, description, quantity_needed, quantity_received, status, created_date) " +
-                     "VALUES (?, ?, ?, ?, ?, 0, 'OPEN', CURDATE())";
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            
-            if (req.getNgoId() > 0) ps.setInt(1, req.getNgoId());
-            else ps.setNull(1, java.sql.Types.INTEGER);
-            
-            if (req.getBeneficiaryId() > 0) ps.setInt(2, req.getBeneficiaryId());
-            else ps.setNull(2, java.sql.Types.INTEGER);
-            
-            ps.setString(3, req.getItemName());
-            ps.setString(4, req.getDescription());
-            ps.setInt(5, req.getQuantityNeeded());
-            ps.executeUpdate();
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) return rs.getInt(1);
-            }
-        }
-        return -1;
+    public boolean create(MaterialRequest mr) {
+        String sql = "INSERT INTO material_requests (ngo_id,item_name,category,description,quantity_needed,quantity_received,delivery_location,deadline,status,created_date) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, mr.getNgoId()); ps.setString(2, mr.getItemName());
+            ps.setString(3, mr.getCategory()); ps.setString(4, mr.getDescription());
+            ps.setInt(5, mr.getQuantityNeeded()); ps.setInt(6, mr.getQuantityReceived());
+            ps.setString(7, mr.getDeliveryLocation()); ps.setObject(8, mr.getDeadline());
+            ps.setString(9, mr.getStatus() != null ? mr.getStatus() : "OPEN");
+            ps.setObject(10, mr.getCreatedDate());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
     }
 
-    public List<MaterialRequest> getAll() throws Exception {
+    public List<MaterialRequest> getAll() {
         List<MaterialRequest> list = new ArrayList<>();
-        String sql = "SELECT mr.*, u.name AS ngo_name FROM material_requests mr " +
-                     "JOIN users u ON mr.ngo_id = u.id ORDER BY mr.created_date DESC";
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) list.add(mapRow(rs));
-        }
+        String sql = "SELECT * FROM material_requests ORDER BY request_id DESC";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) list.add(mapMR(rs));
+        } catch (Exception e) { e.printStackTrace(); }
         return list;
     }
 
-    public List<MaterialRequest> getOpen() throws Exception {
+    public List<MaterialRequest> getOpen() {
         List<MaterialRequest> list = new ArrayList<>();
-        String sql = "SELECT mr.*, n.name AS ngo_name, b.name AS beneficiary_name FROM material_requests mr " +
-                     "LEFT JOIN users n ON mr.ngo_id = n.id " +
-                     "LEFT JOIN users b ON mr.beneficiary_id = b.id " +
-                     "WHERE mr.status = 'OPEN' ORDER BY mr.created_date DESC";
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) list.add(mapRow(rs));
-        }
+        String sql = "SELECT * FROM material_requests WHERE status='OPEN' ORDER BY request_id DESC";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) list.add(mapMR(rs));
+        } catch (Exception e) { e.printStackTrace(); }
         return list;
     }
 
-    public List<MaterialRequest> getByNgo(int ngoId) throws Exception {
+    public List<MaterialRequest> getByNgo(int ngoId) {
         List<MaterialRequest> list = new ArrayList<>();
-        String sql = "SELECT mr.*, u.name AS ngo_name, NULL AS beneficiary_name FROM material_requests mr " +
-                     "JOIN users u ON mr.ngo_id = u.id WHERE mr.ngo_id = ? ORDER BY mr.created_date DESC";
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        String sql = "SELECT * FROM material_requests WHERE ngo_id=? ORDER BY request_id DESC";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, ngoId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) list.add(mapRow(rs));
-            }
-        }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) list.add(mapMR(rs));
+        } catch (Exception e) { e.printStackTrace(); }
         return list;
     }
 
-    public List<MaterialRequest> getByBeneficiary(int beneficiaryId) throws Exception {
-        List<MaterialRequest> list = new ArrayList<>();
-        String sql = "SELECT mr.*, NULL AS ngo_name, u.name AS beneficiary_name FROM material_requests mr " +
-                     "JOIN users u ON mr.beneficiary_id = u.id WHERE mr.beneficiary_id = ? ORDER BY mr.created_date DESC";
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, beneficiaryId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) list.add(mapRow(rs));
-            }
-        }
-        return list;
-    }
-
-    public boolean fulfill(int requestId, int quantity, int donorId, String itemName) throws Exception {
-        boolean success = false;
-        try (Connection con = DBUtil.getConnection()) {
-            con.setAutoCommit(false);
-            try {
-                // Update Material Request
-                String sql = "UPDATE material_requests SET quantity_received = quantity_received + ?, " +
-                             "status = CASE WHEN quantity_received + ? >= quantity_needed THEN 'FULFILLED' ELSE status END " +
-                             "WHERE request_id = ?";
-                try (PreparedStatement ps = con.prepareStatement(sql)) {
-                    ps.setInt(1, quantity);
-                    ps.setInt(2, quantity);
-                    ps.setInt(3, requestId);
-                    ps.executeUpdate();
-                }
-
-                // Log into Material Donations for Donor tracking
-                String logSql = "INSERT INTO material_donations (donor_id, item_description, quantity, donation_date) VALUES (?, ?, ?, CURDATE())";
-                try (PreparedStatement logPs = con.prepareStatement(logSql)) {
-                    logPs.setInt(1, donorId);
-                    logPs.setString(2, "Fulfillment: " + itemName); // Tagging it
-                    logPs.setInt(3, quantity);
-                    logPs.executeUpdate();
-                }
-
-                con.commit();
-                success = true;
-            } catch (Exception e) {
-                con.rollback();
-                throw e;
-            } finally {
-                con.setAutoCommit(true);
-            }
-        }
-        return success;
-    }
-
-    public boolean updateStatus(int id, String status) throws Exception {
-        String sql = "UPDATE material_requests SET status = ? WHERE request_id = ?";
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, status);
-            ps.setInt(2, id);
-            return ps.executeUpdate() > 0;
-        }
-    }
-
-    public boolean delete(int id) throws Exception {
-        String sql = "DELETE FROM material_requests WHERE request_id = ?";
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+    public MaterialRequest getById(int id) {
+        String sql = "SELECT * FROM material_requests WHERE request_id=?";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
-        }
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return mapMR(rs);
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
     }
 
-    private MaterialRequest mapRow(ResultSet rs) throws SQLException {
-        MaterialRequest r = new MaterialRequest();
-        r.setRequestId(rs.getInt("request_id"));
-        r.setNgoId(rs.getInt("ngo_id"));
-        r.setBeneficiaryId(rs.getInt("beneficiary_id"));
-        
-        try { r.setNgoName(rs.getString("ngo_name")); } catch(SQLException e) {}
-        try { r.setBeneficiaryName(rs.getString("beneficiary_name")); } catch(SQLException e) {}
-        
-        r.setItemName(rs.getString("item_name"));
-        r.setDescription(rs.getString("description"));
-        r.setQuantityNeeded(rs.getInt("quantity_needed"));
-        r.setQuantityReceived(rs.getInt("quantity_received"));
-        r.setStatus(rs.getString("status"));
-        r.setCreatedDate(rs.getDate("created_date"));
-        return r;
+    public boolean updateReceivedQty(int id, int qty) {
+        String sql = "UPDATE material_requests SET quantity_received = quantity_received + ? WHERE request_id=?";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, qty); ps.setInt(2, id);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
+    }
+
+    public boolean updateStatus(int id, String status) {
+        String sql = "UPDATE material_requests SET status=? WHERE request_id=?";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, status); ps.setInt(2, id);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
+    }
+
+    public int getCount() {
+        String sql = "SELECT COUNT(*) FROM material_requests";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
+    }
+
+    private MaterialRequest mapMR(ResultSet rs) throws SQLException {
+        MaterialRequest mr = new MaterialRequest();
+        mr.setRequestId(rs.getInt("request_id"));
+        mr.setNgoId(rs.getInt("ngo_id"));
+        mr.setItemName(rs.getString("item_name"));
+        mr.setCategory(rs.getString("category"));
+        mr.setDescription(rs.getString("description"));
+        mr.setQuantityNeeded(rs.getInt("quantity_needed"));
+        mr.setQuantityReceived(rs.getInt("quantity_received"));
+        mr.setDeliveryLocation(rs.getString("delivery_location"));
+        Date d = rs.getDate("deadline");
+        if (d != null) mr.setDeadline(d.toLocalDate());
+        mr.setStatus(rs.getString("status"));
+        Date cd = rs.getDate("created_date");
+        if (cd != null) mr.setCreatedDate(cd.toLocalDate());
+        return mr;
     }
 }

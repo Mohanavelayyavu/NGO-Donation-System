@@ -1,22 +1,13 @@
 package com.ngo.controller;
 
-import java.util.ArrayList;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.ngo.model.Donation;
 import com.ngo.service.DonationService;
-
-/*
- * Donation Controller
- */
+import com.ngo.service.FundRequestService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -25,88 +16,37 @@ public class DonationController {
     @Autowired
     private DonationService service;
 
-    // Donate
+    @Autowired
+    private FundRequestService fundRequestService;
 
-    @PostMapping("/donate")
-    public String donate(@RequestBody Donation donation) {
-
-        boolean status = service.donate(donation);
-
-        if (status) {
-            return "Donation Successful";
+    @PostMapping("/donations")
+    public ResponseEntity<?> create(@RequestBody Donation d) {
+        if (d.getDonationDate() == null) d.setDonationDate(LocalDate.now());
+        boolean ok = service.create(d);
+        if (ok) {
+            fundRequestService.updateCollectedAmount(d.getRequestId(), d.getAmount());
+            return ResponseEntity.ok(Map.of("message","Donation recorded"));
         }
-
-        return "Donation Failed";
-
+        return ResponseEntity.status(500).body(Map.of("message","Donation failed"));
     }
-
-    // View All Donations
 
     @GetMapping("/donations")
-    public ArrayList<Donation> getDonations() {
+    public ResponseEntity<?> getAll() { return ResponseEntity.ok(service.getAll()); }
 
-        return service.getAllDonations();
+    @GetMapping("/donations/donor/{donorId}")
+    public ResponseEntity<?> getByDonor(@PathVariable int donorId) { return ResponseEntity.ok(service.getByDonor(donorId)); }
 
-    }
-
-    // Donation By Id
-
-    @GetMapping("/donations/{id}")
-    public Donation getDonation(@PathVariable int id) {
-
-        return service.getDonationById(id);
-
-    }
-
-    // Donations By Donor
-
-    @GetMapping("/donations/donor/{id}")
-    public ArrayList<Donation> getDonorDonations(@PathVariable int id) {
-
-        return service.getDonationsByDonor(id);
-
-    }
-
-    // Donations By Request
-
-    @GetMapping("/donations/request/{id}")
-    public ArrayList<Donation> getRequestDonations(@PathVariable int id) {
-
-        return service.getDonationsByRequest(id);
-
-    }
-
-    // Total Donation Amount
+    @GetMapping("/donations/request/{requestId}")
+    public ResponseEntity<?> getByRequest(@PathVariable int requestId) { return ResponseEntity.ok(service.getByRequest(requestId)); }
 
     @GetMapping("/donations/total")
-    public double getTotalDonationAmount() {
+    public ResponseEntity<?> getTotal() { return ResponseEntity.ok(Map.of("total", service.getTotalAmount())); }
 
-        return service.getTotalDonationAmount();
+    @GetMapping("/donations/count")
+    public ResponseEntity<?> getCount() { return ResponseEntity.ok(Map.of("count", service.getCount())); }
 
+    @GetMapping("/donations/donor/{donorId}/total")
+    public ResponseEntity<?> getDonorTotal(@PathVariable int donorId) {
+        return ResponseEntity.ok(Map.of("total", service.getTotalAmountByDonor(donorId)));
     }
-
-    // Total Donation Amount For One Request
-
-    @GetMapping("/donations/total/{requestId}")
-    public double getRequestTotal(@PathVariable int requestId) {
-
-        return service.getDonationAmountByRequest(requestId);
-
-    }
-
-    // Delete Donation
-
-    @DeleteMapping("/donations/{id}")
-    public String deleteDonation(@PathVariable int id) {
-
-        boolean status = service.deleteDonation(id);
-
-        if (status) {
-            return "Donation Deleted";
-        }
-
-        return "Delete Failed";
-
-    }
-
 }

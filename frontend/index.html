@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hope Foundation NGO | Empowering Communities</title>
+    <meta name="description" content="Hope Foundation NGO - Supporting underprivileged communities through education, healthcare and food assistance across India.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f7ff;
+            color: #0d1b2a;
+            line-height: 1.6;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: #fff;
+            border-bottom: 1px solid #e8ecf4;
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 12px rgba(21,101,192,0.06);
+        }
+
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1565C0 !important;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar-brand i { color: #1565C0; }
+
+        .nav-link {
+            font-size: 14px;
+            font-weight: 600;
+            color: #444 !important;
+            margin: 0 6px;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover { color: #1565C0 !important; }
+
+        .btn-nav-login {
+            padding: 8px 20px;
+            border: 1.5px solid #1565C0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1565C0;
+            background: transparent;
+            text-decoration: none;
+            transition: all 0.25s;
+            margin-left: 8px;
+        }
+
+        .btn-nav-login:hover {
+            background: #1565C0;
+            color: #fff;
+        }
+
+        .btn-nav-register {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            background: #1565C0;
+            text-decoration: none;
+            transition: all 0.25s;
+            margin-left: 8px;
+        }
+
+        .btn-nav-register:hover {
+            background: #0d47a1;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            background: linear-gradient(135deg, #1565C0 0%, #1976D2 60%, #42A5F5 100%);
+            color: #fff;
+            padding: 100px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            top: -200px;
+            right: -100px;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            bottom: -100px;
+            left: -80px;
+        }
+
+        .hero-content { position: relative; z-index: 1; }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 50px;
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            backdrop-filter: blur(4px);
+        }
+
+        .hero h1 {
+            font-size: 54px;
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span { color: #90CAF9; }
+
+        .hero p {
+            font-size: 17px;
+            color: rgba(255,255,255,0.85);
+            max-width: 500px;
+            line-height: 1.75;
+            margin-bottom: 36px;
+        }
+
+        .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+        .btn-hero-primary {
+            padding: 14px 32px;
+            background: #fff;
+            color: #1565C0;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-hero-primary:hover {
+            background: #e3f2fd;
+            color: #1565C0;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+        }
+
+        .btn-hero-secondary {
+            padding: 14px 32px;
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-hero-secondary:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border-color: rgba(255,255,255,0.7);
+        }
+
+        /* Hero Stats Box */
+        .hero-stats {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 32px;
+            backdrop-filter: blur(8px);
+        }
+
+        .stat-item { text-align: center; }
+
+        .stat-item h3 {
+            font-size: 36px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .stat-item p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+            margin: 0;
+        }
+
+        .stat-divider {
+            width: 1px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* ===== STATS SECTION ===== */
+        .stats-section {
+            padding: 60px 0;
+            background: #fff;
+        }
+
+        .stat-card {
+            background: #f4f7ff;
+            border-radius: 16px;
+            padding: 28px 24px;
+            text-align: center;
+            border: 1px solid #e3eafe;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(21,101,192,0.12);
+        }
+
+        .stat-card .icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #1565C0, #42A5F5);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 24px;
+            color: #fff;
+        }
+
+        .stat-card h2 {
+            font-size: 32px;
+            font-weight: 900;
+            color: #1565C0;
+            margin-bottom: 4px;
+        }
+
+        .stat-card p {
+            font-size: 14px;
+            color: #8a99b0;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        /* ===== MISSION SECTION ===== */
+        .mission-section {
+            padding: 80px 0;
+            background: #f4f7ff;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #1565C0;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0d1b2a;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .section-desc {
+            font-size: 16px;
+            color: #8a99b0;
+            line-height: 1.7;
+        }
+
+        .mission-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 32px 28px;
+            border: 1px solid #e3eafe;
+            height: 100%;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mission-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1565C0, #42A5F5);
+        }
+
+        .mission-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(21,101,192,0.12);
+        }
+
+        .mission-card .icon {
+            width: 52px;
+            height: 52px;
+            background: #e3f2fd;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #1565C0;
+            margin-bottom: 18px;
+        }
+
+        .mission-card h4 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #0d1b2a;
+            margin-bottom: 10px;
+        }
+
+        .mission-card p {
+            font-size: 14px;
+            color: #8a99b0;
+            line-height: 1.65;
+            margin: 0;
+        }
+
+        /* ===== SERVICES SECTION ===== */
+        .services-section {
+            padding: 80px 0;
+            background: #fff;
+        }
+
+        .service-card {
+            background: #f4f7ff;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid #e3eafe;
+            text-align: center;
+            height: 100%;
+            transition: all 0.3s;
+        }
+
+        .service-card:hover {
+            background: #1565C0;
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(21,101,192,0.25);
+        }
+
+        .service-card:hover h4,
+        .service-card:hover p { color: #fff; }
+
+        .service-card:hover .svc-icon {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        .svc-icon {
+            width: 60px;
+            height: 60px;
+            background: #e3f2fd;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: #1565C0;
+            margin: 0 auto 20px;
+            transition: all 0.3s;
+        }
+
+        .service-card h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0d1b2a;
+            margin-bottom: 10px;
+            transition: color 0.3s;
+        }
+
+        .service-card p {
+            font-size: 13.5px;
+            color: #8a99b0;
+            line-height: 1.6;
+            margin: 0;
+            transition: color 0.3s;
+        }
+
+        /* ===== WHY US ===== */
+        .why-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #1565C0 0%, #1976D2 100%);
+            color: #fff;
+        }
+
+        .why-card {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .why-card .icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #fff;
+            margin: 0 auto 20px;
+        }
+
+        .why-card h5 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .why-card p { font-size: 14px; color: rgba(255,255,255,0.75); margin: 0; }
+
+        /* ===== CONTACT ===== */
+        .contact-section {
+            padding: 80px 0;
+            background: #f4f7ff;
+        }
+
+        .contact-info-card {
+            background: #1565C0;
+            border-radius: 20px;
+            padding: 40px;
+            color: #fff;
+            height: 100%;
+        }
+
+        .contact-info-card h4 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .contact-info-card .subtitle {
+            color: rgba(255,255,255,0.75);
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .info-item h6 { font-size: 12px; font-weight: 700; opacity: 0.7; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .info-item p  { font-size: 14px; margin: 0; font-weight: 500; }
+
+        .contact-form-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid #e3eafe;
+        }
+
+        .contact-form-card h4 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0d1b2a;
+            margin-bottom: 24px;
+        }
+
+        .cf-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #e8ecf4;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: #0d1b2a;
+            background: #f9fafc;
+            outline: none;
+            margin-bottom: 14px;
+            transition: all 0.25s;
+        }
+
+        .cf-input:focus {
+            border-color: #1565C0;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(21,101,192,0.1);
+        }
+
+        .cf-input::placeholder { color: #b0bec5; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: #1565C0;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .btn-submit:hover {
+            background: #0d47a1;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(21,101,192,0.35);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: #0d1b2a;
+            color: #fff;
+            padding: 60px 0 28px;
+        }
+
+        footer h5 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        footer p { color: #8a99b0; font-size: 14px; line-height: 1.7; }
+
+        footer a {
+            color: #8a99b0;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 8px;
+            transition: color 0.2s;
+        }
+
+        footer a:hover { color: #42A5F5; }
+
+        .footer-brand {
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .footer-brand i { color: #42A5F5; }
+
+        .footer-bottom {
+            border-top: 1px solid #1a2a3a;
+            padding-top: 24px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .social-icons { display: flex; gap: 12px; margin-top: 20px; }
+
+        .social-icon {
+            width: 38px;
+            height: 38px;
+            background: #1a2a3a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #8a99b0;
+            text-decoration: none;
+            transition: all 0.25s;
+        }
+
+        .social-icon:hover { background: #1565C0; color: #fff; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .hero-stats { margin-top: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="bi bi-heart-pulse-fill"></i>
+            Hope Foundation NGO
+        </a>
+        <div class="d-flex align-items-center ms-auto gap-1 flex-wrap">
+            <a class="nav-link" href="#about">About</a>
+            <a class="nav-link" href="#services">Services</a>
+            <a class="nav-link" href="#contact">Contact</a>
+            <a class="btn-nav-login" href="login.html">Login</a>
+            <a class="btn-nav-register" href="register.html">Register</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="container hero-content">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="hero-badge">
+                    <i class="bi bi-stars"></i> India's Trusted NGO Platform
+                </div>
+                <h1>Giving is about <span>making a difference</span></h1>
+                <p>Hope Foundation connects donors, NGOs, and beneficiaries to create lasting change through education, healthcare, and community development across India.</p>
+                <div class="hero-btns">
+                    <a href="register.html" class="btn-hero-primary">
+                        <i class="bi bi-heart-fill"></i> Join Us Today
+                    </a>
+                    <a href="login.html" class="btn-hero-secondary">
+                        <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-stats">
+                    <div class="row g-0 align-items-center">
+                        <div class="col-3 stat-item">
+                            <h3 id="ngoCount">—</h3>
+                            <p>NGOs</p>
+                        </div>
+                        <div class="col-1 stat-divider" style="height:60px;"></div>
+                        <div class="col-4 stat-item">
+                            <h3 id="donorCount">—</h3>
+                            <p>Donors</p>
+                        </div>
+                        <div class="col-1 stat-divider" style="height:60px;"></div>
+                        <div class="col-3 stat-item">
+                            <h3 id="donationAmount">—</h3>
+                            <p>Donated</p>
+                        </div>
+                    </div>
+                    <hr style="border-color:rgba(255,255,255,0.15);margin:24px 0;">
+                    <div class="row g-0">
+                        <div class="col-12 stat-item">
+                            <h3 id="beneficiaryCount">—</h3>
+                            <p>Beneficiaries Supported</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===== MISSION ===== -->
+<section class="mission-section" id="about">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-4">
+                <div class="section-label">Our Mission</div>
+                <div class="section-title">What We Stand For</div>
+                <p class="section-desc">Hope Foundation is committed to improving the quality of life for individuals and families in need across India. We work with volunteers, donors, and communities every day.</p>
+                <a href="register.html" class="btn-nav-register" style="display:inline-block;margin-top:24px;">Get Involved →</a>
+            </div>
+            <div class="col-lg-8">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="mission-card">
+                            <div class="icon"><i class="bi bi-book-fill"></i></div>
+                            <h4>Education</h4>
+                            <p>Providing quality education and scholarships to children from economically weaker backgrounds.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mission-card">
+                            <div class="icon"><i class="bi bi-hospital-fill"></i></div>
+                            <h4>Healthcare</h4>
+                            <p>Supporting families with medical treatment, medicines and health awareness programs.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mission-card">
+                            <div class="icon"><i class="bi bi-basket-fill"></i></div>
+                            <h4>Food Support</h4>
+                            <p>Distributing nutritious food and essential supplies to families in need across communities.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mission-card">
+                            <div class="icon"><i class="bi bi-globe-central-south-asia"></i></div>
+                            <h4>Community Development</h4>
+                            <p>Empowering communities through sustainable development and social welfare initiatives.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section class="services-section" id="services">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="section-label">What We Do</div>
+            <div class="section-title">Our Services</div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="svc-icon"><i class="bi bi-book-half"></i></div>
+                    <h4>Education Support</h4>
+                    <p>Scholarships, school supplies and educational programs for children in need.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="svc-icon"><i class="bi bi-hospital-fill"></i></div>
+                    <h4>Medical Assistance</h4>
+                    <p>Financial support for treatment, medicines and healthcare awareness.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="svc-icon"><i class="bi bi-basket-fill"></i></div>
+                    <h4>Food Distribution</h4>
+                    <p>Providing food kits and nutrition support to underprivileged families.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="svc-icon"><i class="bi bi-house-heart-fill"></i></div>
+                    <h4>Disaster Relief</h4>
+                    <p>Emergency support during floods, cyclones and natural disasters.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="svc-icon"><i class="bi bi-person-hearts"></i></div>
+                    <h4>Women Empowerment</h4>
+                    <p>Skill development and livelihood opportunities for women.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="service-card">
+                    <div class="svc-icon"><i class="bi bi-people-fill"></i></div>
+                    <h4>Community Welfare</h4>
+                    <p>Social development programs for rural and urban communities.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== WHY US ===== -->
+<section class="why-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 style="font-size:34px;font-weight:800;letter-spacing:-0.02em;">Why Choose Us</h2>
+            <p style="color:rgba(255,255,255,0.75);font-size:16px;margin-top:8px;">Trusted, transparent, and impactful.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="why-card">
+                    <div class="icon"><i class="bi bi-shield-check"></i></div>
+                    <h5>Trusted NGO</h5>
+                    <p>Dedicated to serving communities with honesty and integrity.</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="why-card">
+                    <div class="icon"><i class="bi bi-eye-fill"></i></div>
+                    <h5>Transparency</h5>
+                    <p>Every donation is monitored and used responsibly.</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="why-card">
+                    <div class="icon"><i class="bi bi-people"></i></div>
+                    <h5>Volunteers</h5>
+                    <p>Passionate volunteers working together for social welfare.</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="why-card">
+                    <div class="icon"><i class="bi bi-award-fill"></i></div>
+                    <h5>Positive Impact</h5>
+                    <p>Improving lives through education, healthcare and support.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section class="contact-section" id="contact">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="section-label">Get In Touch</div>
+            <div class="section-title">Contact Us</div>
+        </div>
+        <div style="max-width:560px; margin:0 auto;">
+            <div class="contact-info-card">
+                <h4>Hope Foundation NGO</h4>
+                <p class="subtitle">We welcome individuals, organizations and volunteers to join our mission.</p>
+
+                <div class="info-item">
+                    <div class="info-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                    <div>
+                        <h6>Address</h6>
+                        <p>Chennai, Tamil Nadu, India</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class="bi bi-envelope-fill"></i></div>
+                    <div>
+                        <h6>Email</h6>
+                        <p>info@hopefoundation.org</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class="bi bi-telephone-fill"></i></div>
+                    <div>
+                        <h6>Phone</h6>
+                        <p>+91 98765 43210</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class="bi bi-clock-fill"></i></div>
+                    <div>
+                        <h6>Working Hours</h6>
+                        <p>Mon–Sat: 9:00 AM – 6:00 PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="footer-brand">
+                    <i class="bi bi-heart-pulse-fill"></i>
+                    Hope Foundation
+                </div>
+                <p>Together we transform lives through education, healthcare, food support and community development.</p>
+                <div class="social-icons">
+                    <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h5>Quick Links</h5>
+                <a href="#">Home</a>
+                <a href="#about">About</a>
+                <a href="#services">Services</a>
+                <a href="#contact">Contact</a>
+                <a href="login.html">Login</a>
+                <a href="register.html">Register</a>
+            </div>
+            <div class="col-md-4">
+                <h5>Our Services</h5>
+                <a href="#">Education Support</a>
+                <a href="#">Medical Assistance</a>
+                <a href="#">Food Distribution</a>
+                <a href="#">Disaster Relief</a>
+                <a href="#">Women Empowerment</a>
+                <a href="#">Community Welfare</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p style="margin:0;">© 2026 Hope Foundation NGO. All Rights Reserved. | Made with <i class="bi bi-heart-fill" style="color:#42A5F5;"></i> in India</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const BASE = "http://localhost:8081";
+
+async function loadHomeStats() {
+    try {
+        // Fetch all data in parallel
+        const [usersRes, requestsRes, benefRes, totalRes] = await Promise.all([
+            fetch(BASE + "/users"),
+            fetch(BASE + "/requests"),
+            fetch(BASE + "/beneficiaries"),
+            fetch(BASE + "/donations/total")
+        ]);
+
+        const users        = await usersRes.json();
+        const requests     = await requestsRes.json();
+        const beneficiaries = await benefRes.json();
+        const totalAmount  = await totalRes.json();
+
+        // Count by role
+        const ngoCount    = users.filter(u => u.role === "NGO").length;
+        const donorCount  = users.filter(u => u.role === "DONOR").length;
+        const benefCount  = beneficiaries.length;
+
+        // Format total donations as ₹ with K/L suffix
+        function formatAmount(n) {
+            if (n >= 100000) return "₹" + (n / 100000).toFixed(1) + "L";
+            if (n >= 1000)   return "₹" + (n / 1000).toFixed(1)  + "K";
+            return "₹" + n;
+        }
+
+        // Update hero stats
+        const el = id => document.getElementById(id);
+        if (el("ngoCount"))         el("ngoCount").textContent         = ngoCount   || "0";
+        if (el("donorCount"))       el("donorCount").textContent       = donorCount || "0";
+        if (el("donationAmount"))   el("donationAmount").textContent   = formatAmount(totalAmount || 0);
+        if (el("beneficiaryCount")) el("beneficiaryCount").textContent = benefCount || "0";
+
+    } catch (err) {
+        console.warn("Could not load live stats:", err);
+    }
+}
+
+loadHomeStats();
+</script>
+</body>
+</html>

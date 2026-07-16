@@ -302,7 +302,19 @@ function setupEventListeners() {
   if (benForm) benForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
-    const data = { beneficiaryId: AUTH.getUserId(), assistanceCategory: fd.get('assistanceCategory'), itemName: fd.get('itemName'), requestedQuantity: parseInt(fd.get('requestedQuantity')) || null, requestedAmount: parseFloat(fd.get('requestedAmount')) || null, reason: fd.get('reason'), urgency: fd.get('urgency') };
+    if (!currentBeneficiaryId) {
+      const profile = await API.beneficiaries.getByUserId(AUTH.getUserId());
+      currentBeneficiaryId = profile.id;
+    }
+    const data = { 
+      beneficiaryId: currentBeneficiaryId, 
+      assistanceCategory: fd.get('assistanceCategory'), 
+      itemName: fd.get('itemName'), 
+      requestedQuantity: parseInt(fd.get('requestedQuantity')) || null, 
+      requestedAmount: parseFloat(fd.get('requestedAmount')) || null, 
+      reason: fd.get('reason'), 
+      urgency: fd.get('urgency') 
+    };
     try {
       await createBeneficiaryRequest(data);
       e.target.reset();
@@ -891,18 +903,26 @@ async function loadDonorTracking() {
   } catch (err) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><p>${err.message}</p></div></td></tr>`; }
 }
 
+let currentBeneficiaryId = null;
+
 // ===== BENEFICIARY DASHBOARD =====
 async function loadBeneficiaryDashboard() {
   const userId = AUTH.getUserId();
   try {
+    const profile = await API.beneficiaries.getByUserId(userId);
+    if (!profile) {
+      showToast('Beneficiary profile not found. Contact Admin.', 'danger');
+      return;
+    }
+    currentBeneficiaryId = profile.id;
+
     const [reqs, allocs] = await Promise.all([
-      API.beneficiaryRequests.getByBeneficiary(userId),
-      API.beneficiaryAllocations.getAll() // Note: getAll returns all, frontend filters by user
+      API.beneficiaryRequests.getByBeneficiary(currentBeneficiaryId),
+      API.beneficiaryAllocations.getAll()
     ]);
-    // Filter allocations where user matches (NGO verified user id matches or similar)
-    // Actually, getByBeneficiary is not in Controller, let's filter allocations in JS by user id
     const requests = reqs || [];
-    const allocations = (allocs || []).filter(a => a.beneficiaryId === userId || true); // Default filter helper
+    const reqIds = new Set(requests.map(r => r.requestId));
+    const allocations = (allocs || []).filter(a => reqIds.has(a.beneficiaryRequestId));
     const confirmed = allocations.filter(a => (a.distributionStatus || '').toLowerCase() === 'confirmed').length;
     const pending = requests.filter(r => (r.status || '').toLowerCase() === 'pending').length;
 
@@ -921,7 +941,11 @@ async function loadBeneficiaryRequests() {
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="6" class="loading">Loading</td></tr>';
   try {
-    const reqs = await API.beneficiaryRequests.getByBeneficiary(AUTH.getUserId());
+    if (!currentBeneficiaryId) {
+      const profile = await API.beneficiaries.getByUserId(AUTH.getUserId());
+      currentBeneficiaryId = profile.id;
+    }
+    const reqs = await API.beneficiaryRequests.getByBeneficiary(currentBeneficiaryId);
     if (!reqs || reqs.length === 0) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><i class="bi bi-list-check"></i><p>No requests yet. Submit your first one!</p></div></td></tr>'; return; }
     tbody.innerHTML = reqs.map(r => `<tr>
       <td>${createBadge(r.assistanceCategory)}</td>
@@ -940,9 +964,19 @@ async function loadBeneficiaryAllocations() {
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="5" class="loading">Loading</td></tr>';
   try {
-    const allocs = await API.beneficiaryAllocations.getAll();
-    if (!allocs || allocs.length === 0) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="bi bi-gift"></i><p>No allocations received yet.</p></div></td></tr>'; return; }
-    tbody.innerHTML = allocs.map(a => `<tr>
+    if (!currentBeneficiaryId) {
+      const profile = await API.beneficiaries.getByUserId(AUTH.getUserId());
+      currentBeneficiaryId = profile.id;
+    }
+    const [reqs, allocs] = await Promise.all([
+      API.beneficiaryRequests.getByBeneficiary(currentBeneficiaryId),
+      API.beneficiaryAllocations.getAll()
+    ]);
+    const reqIds = new Set((reqs || []).map(r => r.requestId));
+    const myAllocs = (allocs || []).filter(a => reqIds.has(a.beneficiaryRequestId));
+
+    if (!myAllocs || myAllocs.length === 0) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="bi bi-gift"></i><p>No allocations received yet.</p></div></td></tr>'; return; }
+    tbody.innerHTML = myAllocs.map(a => `<tr>
       <td>NGO #${a.ngoId}</td>
       <td>${createBadge(a.allocationType)}</td>
       <td>${a.allocatedAmount ? formatCurrencyFull(a.allocatedAmount) : (a.allocatedQuantity ? a.allocatedQuantity + ' units' : '-')}</td>
@@ -958,8 +992,17 @@ async function loadBeneficiaryConfirmations() {
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="6" class="loading">Loading</td></tr>';
   try {
-    const allocs = await API.beneficiaryAllocations.getAll();
-    const pending = (allocs || []).filter(a => (a.distributionStatus || '').toLowerCase() !== 'confirmed');
+    if (!currentBeneficiaryId) {
+      const profile = await API.beneficiaries.getByUserId(AUTH.getUserId());
+      currentBeneficiaryId = profile.id;
+    }
+    const [reqs, allocs] = await Promise.all([
+      API.beneficiaryRequests.getByBeneficiary(currentBeneficiaryId),
+      API.beneficiaryAllocations.getAll()
+    ]);
+    const reqIds = new Set((reqs || []).map(r => r.requestId));
+    const pending = (allocs || []).filter(a => reqIds.has(a.beneficiaryRequestId) && (a.distributionStatus || '').toLowerCase() !== 'confirmed');
+
     if (!pending.length) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><i class="bi bi-check2-all"></i><p>All allocations confirmed!</p></div></td></tr>'; return; }
     tbody.innerHTML = pending.map(a => `<tr>
       <td>NGO #${a.ngoId}</td>

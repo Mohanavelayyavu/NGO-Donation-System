@@ -88,6 +88,16 @@ public class BeneficiaryDAO {
         return 0;
     }
 
+    public Beneficiary getByUserId(int userId) {
+        String sql = "SELECT * FROM beneficiaries WHERE user_id=?";
+        try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return mapBen(rs);
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
+    }
+
     private Beneficiary mapBen(ResultSet rs) throws SQLException {
         Beneficiary b = new Beneficiary();
         b.setId(rs.getInt("id"));

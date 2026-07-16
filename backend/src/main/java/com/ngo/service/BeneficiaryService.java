@@ -14,5 +14,6 @@ public class BeneficiaryService {
     public boolean verify(int id) { return dao.verify(id); }
     public boolean reject(int id) { return dao.reject(id); }
     public Beneficiary getById(int id) { return dao.getById(id); }
+    public Beneficiary getByUserId(int userId) { return dao.getByUserId(userId); }
     public int getCount() { return dao.getCount(); }
 }

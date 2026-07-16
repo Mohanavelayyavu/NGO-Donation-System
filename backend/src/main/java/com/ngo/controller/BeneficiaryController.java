@@ -46,4 +46,11 @@ public class BeneficiaryController {
 
     @GetMapping("/beneficiaries/count")
     public ResponseEntity<?> getCount() { return ResponseEntity.ok(Map.of("count", service.getCount())); }
+
+    @GetMapping("/beneficiaries/user/{userId}")
+    public ResponseEntity<?> getByUserId(@PathVariable int userId) {
+        Beneficiary b = service.getByUserId(userId);
+        if (b != null) return ResponseEntity.ok(b);
+        return ResponseEntity.status(404).body(Map.of("message","Beneficiary profile not found"));
+    }
 }
